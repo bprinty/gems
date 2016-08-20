@@ -1,0 +1,17 @@
+[
+    1,
+    {
+        "two": 3,
+        "four": "five",
+        "six": [7, 8, 9, "ten"]
+    },
+    [
+        11, 
+        12,
+        {
+            "thirteen": "fourteen",
+            "fifteen": 16,
+            "seventeen": [18]
+        }
+    ]
+]
