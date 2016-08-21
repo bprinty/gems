@@ -111,6 +111,12 @@ class TestComposite(unittest.TestCase):
         obj = data + [1, 2]
         self.assertEqual(obj[-2:], [1, 2])
         self.assertEqual(obj[1].six[1], 8)
+
+        obj = composite({}) + data
+        self.assertEqual(obj[1].two, 3)
+
+        obj = data + composite({})
+        self.assertEqual(obj[1].two, 3)
         return
 
     def test_eq(self):

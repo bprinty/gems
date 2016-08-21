@@ -113,6 +113,8 @@ class composite(object):
                     return composite(self._list + other._list)
                 elif len(other._dict) != 0:
                     return composite([self._list, other._dict])
+                else:
+                    return self
             elif isinstance(other, dict):
                 return composite([self._list, other])
             elif isinstance(other, (list, tuple)):
@@ -130,6 +132,8 @@ class composite(object):
                     for k in self._dict:
                         newdict[k] = self._dict[k]
                     return composite(newdict)
+                else:
+                    return self
             elif isinstance(other, dict):
                 newdict = {}
                 for k in other:
@@ -139,6 +143,11 @@ class composite(object):
                 return composite(newdict)
             else:
                 return composite([self._dict, other])
+        else:
+            if isinstance(other, composite):
+                return other
+            else:
+                return composite(other)
         return
 
     def __contains__(self, item):
