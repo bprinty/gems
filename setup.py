@@ -16,8 +16,9 @@ except ImportError:
 
 import gems
 
-with open('requirements.txt', 'r') as reqs:
-    requirements = reqs.readlines()
+requirements = [
+    # TODO: nothing yet
+]
 
 test_requirements = [
     # TODO: put package test requirements here
