@@ -22,6 +22,12 @@ pip install gems
 ```
 
 
+Documentation
+-------------
+
+Documentation for the package can be found [here](http://gems.readthedocs.io/en/latest/index.html).
+
+
 Usage
 -----
 
