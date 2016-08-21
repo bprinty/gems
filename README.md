@@ -29,11 +29,10 @@ The [gems](http://github.com/bprinty/gems) module provides specialized data stru
 
 Currently, the following objects are available (this list will grow with time and feedback):
 
-+------------+----------------------------------------------------+ 
-| Name       | Description                                        | 
-+============+====================================================+ 
-| composite  | JSON-like data structure for easy data traversal.  | 
-+------------+----------------------------------------------------+ 
+Name         | Description
+------------ | -------------
+composite    | JSON-like data structure for easy data traversal.
+
 
 ### composite
 
