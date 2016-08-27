@@ -103,8 +103,13 @@ class composite(object):
     def __getattr__(self, name):
         return self._dict.get(name)
 
-    def __getitem__(self, idx):
-        return self._list[idx]
+    def __getitem__(self, item):
+        if len(self._list) != 0:
+            return self._list[item]
+        elif len(self._dict) != 0:
+            return self._dict[item]
+        else:
+            return None
 
     def __add__(self, other):
         if len(self._list) != 0:

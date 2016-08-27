@@ -58,6 +58,7 @@ class TestComposite(unittest.TestCase):
     def test_properties(self):
         data = composite(self._dict)
         self.assertEqual(data.one, 1)
+        self.assertEqual(data['one'], 1)
         self.assertEqual(data.two[1], 2)
         self.assertEqual(data.three[2].three, 'four')
         self.assertEqual(data.four.five[2], 8)
