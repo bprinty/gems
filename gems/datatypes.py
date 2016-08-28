@@ -35,8 +35,8 @@ class composite(object):
     """
 
     def __init__(self, data):
-        self._data = data
-        self._list, self._dict = [], {}
+        self._list = []
+        self._dict = {}
 
         if isinstance(data, file):
             data = json.load(data)
@@ -110,6 +110,18 @@ class composite(object):
             return self._dict[item]
         else:
             return None
+
+    def __setattr__(self, name, value):
+        if name == '_list' or name == '_dict' or name not in self._dict.keys():
+            super(composite, self).__setattr__(name, value)
+        else:
+            self._dict[name] = value
+
+    def __setitem__(self, idx, value):
+        if len(self._list) != 0:
+            self._list[idx] = value
+        elif len(self._dict) != 0:
+            self._dict[idx] = value
 
     def __add__(self, other):
         if len(self._list) != 0:

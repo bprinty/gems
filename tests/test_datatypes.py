@@ -63,6 +63,10 @@ class TestComposite(unittest.TestCase):
         self.assertEqual(data.three[2].three, 'four')
         self.assertEqual(data.four.five[2], 8)
         self.assertEqual(data.four.five[1:3], [7, 8])
+        data.one = 2
+        self.assertEqual(data.one, 2)
+        data['one'] = 3
+        self.assertEqual(data.one, 3)
 
         data = composite(self._list)
         self.assertEqual(data[0], 1)
@@ -70,6 +74,8 @@ class TestComposite(unittest.TestCase):
         self.assertEqual(data[2][1], 12)
         self.assertEqual(data[2][2].seventeen[0], 18)
         self.assertEqual(data[1].six[0:2], [7, 8])
+        data[0] = 2
+        self.assertEqual(data[0], 2)
         return
 
     def test_iteration(self):
