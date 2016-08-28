@@ -65,8 +65,14 @@ class TestComposite(unittest.TestCase):
         self.assertEqual(data.four.five[1:3], [7, 8])
         data.one = 2
         self.assertEqual(data.one, 2)
+        self.assertEqual(data._dict['one'], 2)
         data['one'] = 3
         self.assertEqual(data.one, 3)
+        data.five = 6
+        self.assertEqual(data.five, 6)
+        self.assertEqual(data._dict['five'], 6)
+        data['five'] = 7
+        self.assertEqual(data.five, 7)
 
         data = composite(self._list)
         self.assertEqual(data[0], 1)

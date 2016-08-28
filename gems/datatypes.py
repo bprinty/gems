@@ -112,7 +112,7 @@ class composite(object):
             return None
 
     def __setattr__(self, name, value):
-        if name == '_list' or name == '_dict' or name not in self._dict.keys():
+        if name == '_list' or name == '_dict':
             super(composite, self).__setattr__(name, value)
         else:
             self._dict[name] = value
