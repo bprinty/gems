@@ -91,6 +91,10 @@ class TestComposite(unittest.TestCase):
         obj = data + {'five': 6}
         self.assertEqual(obj.one, 1)
         self.assertEqual(obj.five, 6)
+        obj = data + {'one': 2}
+        self.assertEqual(obj.one, 2)
+        obj += {'one': 2}
+        self.assertEqual(obj.one, 2)
         obj = data + 6
         self.assertEqual(obj[0].one, 1)
         self.assertEqual(obj[1], 6)

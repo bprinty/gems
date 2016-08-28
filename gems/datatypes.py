@@ -132,19 +132,19 @@ class composite(object):
                     return composite([self._dict, other._list])
                 elif len(other._dict) != 0:
                     newdict = {}
-                    for k in other._dict:
-                        newdict[k] = other._dict[k]
                     for k in self._dict:
                         newdict[k] = self._dict[k]
+                    for k in other._dict:
+                        newdict[k] = other._dict[k]
                     return composite(newdict)
                 else:
                     return self
             elif isinstance(other, dict):
                 newdict = {}
-                for k in other:
-                    newdict[k] = other[k]
                 for k in self._dict:
                     newdict[k] = self._dict[k]
+                for k in other:
+                    newdict[k] = other[k]
                 return composite(newdict)
             else:
                 return composite([self._dict, other])
