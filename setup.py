@@ -27,7 +27,7 @@ test_requirements = [
 
 # files
 # -----
-with open('README.md') as readme_file:
+with open('README.rst') as readme_file:
     readme = readme_file.read()
 
 
@@ -50,7 +50,7 @@ setup(
     install_requires=requirements,
     license="Apache-2.0",
     zip_safe=False,
-    keywords=['gems', 'data', 'structures', 'types'],
+    keywords=['gems', 'data', 'structures', 'types', 'filesystem', 'management'],
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apple Public Source License',
