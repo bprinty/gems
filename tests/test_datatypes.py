@@ -11,7 +11,7 @@
 # -------
 import os
 import unittest
-from gems import composite
+from gems import composite, filetree
 
 
 # config
@@ -53,7 +53,7 @@ class TestComposite(unittest.TestCase):
         data = composite.load(open(os.path.join(__resources__, 'list.json'), 'r'))
         self.assertEqual(data.keys(), None)
         self.assertEqual(len(data), 3)
-        pass
+        return
 
     def test_properties(self):
         data = composite(self._dict)
@@ -143,3 +143,24 @@ class TestComposite(unittest.TestCase):
         self.assertNotEqual(data, self._list)
         self.assertNotEqual(data, composite(self._list))
         return
+
+class TestFiletree(unittest.TestCase):
+    _dir = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+
+    def test_properties(self):
+        data = filetree(self._dir)
+        self.assertTrue(os.path.exists(data.tests['test_datatypes.py']))
+        self.assertTrue('tests/test_datatypes.py' in data.tests['test_datatypes.py'])
+        self.assertTrue(isinstance(data['tests'].resources, filetree))
+        self.assertTrue(os.path.exists(data.tests.resources['dict.json']))
+        self.assertTrue('tests/resources/dict.json' in data.tests.resources['dict.json'])
+        return
+
+    def test_operators(self):
+        data = filetree(self._dir)
+        self.assertTrue('tests/resources' in data)
+        self.assertTrue('tests/resources/dict.json' in data)
+        self.assertFalse('tests/resources/di.json' in data)
+        self.assertFalse('fakefile' in data)
+        return
+

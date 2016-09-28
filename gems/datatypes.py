@@ -9,6 +9,8 @@
 # imports
 # -------
 import json
+import os
+import re
 
 
 # data management
@@ -229,3 +231,118 @@ class composite(object):
                     ret[key] = self._dict[key].json()
             return ret
 
+
+# data management
+# -----------------
+class filetree(object):
+    """
+    Data structure for traversing directory structure and creating object for
+    accessing relative file paths.
+
+    .. NOTE: The filetree is completely walked through when this object is
+        instantiated, so expect object creation for large trees to be
+        relatively expensive.
+
+    Args:
+        directory (str): Directory to build filetree from.
+        ignore (str): Regular expression with items to ignore. If you wish
+            to recurse through all directories (including hidden directories),
+            set ignore=None. By default, this is set to "^[._]" (i.e. any files
+            beginning with "." or "_").
+
+    Example:
+        >>> data = filetree('mydir')
+        >>> print data
+        mydir/
+             one/
+                two.txt
+                three.json
+            two/
+                three/
+                      four.txt
+                five six/
+                         seven.txt
+                eight.config
+        >>> print data.one['two.txt']
+        /full/path/to/mydir/one/two.txt
+        >>> print data.two.three['four.txt']
+        /full/path/to/mydir/two/three/four.txt
+        >>> print data.two['five six']['eight.config']
+        /full/path/to/mydir/two/five six/eight.config
+    """
+
+    def __init__(self, directory, ignore=r"^[._]"):
+        self.root = os.path.realpath(directory)
+        self._data = {}
+        for item in os.listdir(self.root):
+            if ignore is not None:
+                if re.search(ignore, item):
+                    continue
+            fullpath = os.path.realpath(os.path.join(self.root, item))
+            if os.path.isdir(fullpath):
+                self._data[os.path.basename(fullpath)] = filetree(fullpath)
+            else:
+                self._data[os.path.basename(fullpath)] = fullpath
+        return
+
+    def __len__(self):
+        return len(self._data)
+
+    def __str__(self):
+        """
+        .. NOTE:: This needs to be completed -- print filetree
+        """
+        def jstr(data, tab=''):
+            res = ''
+            for item in data:
+                if isinstance(data[item], basestring):
+                    res += tab + item + '\n'
+                else:
+                    res += tab + item + '/\n'
+                    res += jstr(data[item], tab=tab+'\t')
+            return res
+        return jstr(self.json())
+
+    def __iter__(self):
+        for item in self._data:
+            yield self._data[item]
+
+    def __getattr__(self, name):
+        if name not in self._data:
+            raise AttributeError('filetree object has no attribute {}!'.format(name))
+        return self._data[name]
+
+    def __getitem__(self, item):
+        if item not in self._data:
+            raise AttributeError('filetree object has no attribute {}!'.format(item))
+        return self._data[item]
+
+    def __contains__(self, item):
+        if item in self._data:
+            return True
+        item = item.replace(self.root, '')
+        item = re.sub(r"^[/\\]", "", item)
+        subpaths = item.split("/")
+        idx, cdata = 0, self
+        try:
+            while idx < len(subpaths):
+                cdata = cdata[subpaths[idx]]
+                idx += 1
+        except AttributeError:
+            return False
+        return True
+
+    def __eq__(self, other):
+        return self._data == other._data
+
+    def json(self):
+        """
+        Return JSON representation of object.
+        """
+        data = {}
+        for item in self._data:
+            if isinstance(self._data[item], filetree):
+                data[item] = self._data[item].json()
+            else:
+                data[item] = self._data[item]
+        return data

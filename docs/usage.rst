@@ -1,4 +1,3 @@
-========
 Usage
 ========
 
@@ -6,17 +5,21 @@ The `gems <http://github.com/bprinty/gems>`_ module provides specialized data st
 
 Currently, the following objects are available (this list will grow with time and feedback):
 
-+------------+----------------------------------------------------+ 
-| Name       | Description                                        | 
-+============+====================================================+ 
-| composite  | JSON-like data structure for easy data traversal.  | 
-+------------+----------------------------------------------------+ 
-
++------------+---------------------------------------------------------+ 
+| Name       | Description                                             | 
++============+=========================================================+ 
+| composite  | JSON-like data structure for easy data traversal.       | 
++------------+---------------------------------------------------------+ 
+| filetree   | JSON-like data structure for easy filesystem traversal. | 
++------------+---------------------------------------------------------+ 
 
 
 composite
-+++++++++
-Here is an example of how to use the ``composite`` type in a project::
+---------
+
+The :class:`gems.composite` object abstracts away the complexity associated with managing heavily nested JSON-based structures, allowing easier access to internal properties, and providing operators that work with the data in an intuitive way. Here is a simple example of how to use the :class:`composite` type in a project:
+
+.. code-block:: python
 
     >>> from gems import composite
     >>>
@@ -34,7 +37,9 @@ Here is an example of how to use the ``composite`` type in a project::
 
 In the example above, an arbitrary data structure is provided as an argument to the ``composite`` object, and is transformed into an object where properties can be traversed more gracefully (syntactically).
 
-There are also operations tied to ``composite`` objects. If two composite objects or a composite object and another similar type are added, you get a ``composite`` object as a result that combines the objects in an intuitive way::
+There are also operations tied to ``composite`` objects. If two composite objects or a composite object and another similar type are added, you get a ``composite`` object as a result that combines the objects in an intuitive way:
+
+.. code-block:: python
 
     >>> # using the 'data' object from above
     >>> obj = data + {'five': 6}
@@ -62,7 +67,9 @@ There are also operations tied to ``composite`` objects. If two composite object
     True
 
 
-Other operations like this also can be used with the ``composite`` object. For example::
+Other operations like this also can be used with the ``composite`` object. For example:
+
+.. code-block:: python
 
     >>> # using the 'data' object from above
     >>> 'three' in data
@@ -75,8 +82,41 @@ Other operations like this also can be used with the ``composite`` object. For e
     False
 
 
-Questions/Feedback
-------------------
+filetree
+--------
 
-File an issue in the `GitHub issue tracker <https://github.com/bprinty/animation/issues>`_.
+Traversal of a filetree is typically a pain in python. You could use ``os.path.walk`` to within a recursive function to accomplish it, but there should be an easier way. That's where the :class:`gems.filetree` comes in handy. Here is an example of how to use the :class:`gems.filetree` type in a project:
+
+.. code-block:: python
+
+    >>> from gems import filetree
+    >>>
+    >>> # mydir is a directory with the structure below
+    >>> ftree = filetree('mydir')
+    >>> print ftree
+    mydir/
+         one/
+            two.txt
+            three.json
+        two/
+            three/
+                  four.txt
+            five six/
+                     seven.txt
+            eight.config
+
+The :class:`gems.filetree` structure also allows for traversal of the file data like so:
+
+.. code-block:: python
+
+    >>> print data.one['two.txt']
+    /full/path/to/mydir/one/two.txt
+    >>>
+    >>> print data.two.three['four.txt']
+    /full/path/to/mydir/two/three/four.txt
+    >>>
+    >>> print data.two['five six']['eight.config']
+    /full/path/to/mydir/two/five six/eight.config
+
+Using JSON-based access is much easier and cleaner than doing many ``os.path.join`` operations to create the full paths to objects on your filesystem. 
 
