@@ -47,7 +47,7 @@ Currently, the following objects are available (this list will grow with time an
 composite
 +++++++++
 
-The :class:`gems.composite` object abstracts away the complexity associated with managing heavily nested JSON-based structures, allowing easier access to internal properties, and providing operators that work with the data in an intuitive way. Here is a simple example of how to use the :class:`composite` type in a project:
+The ``composite`` object abstracts away the complexity associated with managing heavily nested JSON-based structures, allowing easier access to internal properties, and providing operators that work with the data in an intuitive way. Here is a simple example of how to use the ``composite`` type in a project:
 
 .. code-block:: python
 
@@ -115,7 +115,7 @@ Other operations like this also can be used with the ``composite`` object. For e
 filetree
 ++++++++
 
-Traversal of a filetree is typically a pain in python. You could use ``os.path.walk`` to within a recursive function to accomplish it, but there should be an easier way. That's where the :class:`gems.filetree` comes in handy. Here is an example of how to use the :class:`gems.filetree` type in a project:
+Traversal of a filetree is typically a pain in python. You could use ``os.path.walk`` to within a recursive function to accomplish it, but there should be an easier way. That's where the ``gems.filetree`` comes in handy. Here is an example of how to use the ``gems.filetree`` type in a project:
 
 .. code-block:: python
 
@@ -135,7 +135,7 @@ Traversal of a filetree is typically a pain in python. You could use ``os.path.w
                      seven.txt
             eight.config
 
-The :class:`gems.filetree` structure also allows for traversal of the file data like so:
+The ``gems.filetree`` structure also allows for traversal of the file data like so:
 
 .. code-block:: python
 
@@ -154,4 +154,4 @@ Using JSON-based access is much easier and cleaner than doing many ``os.path.joi
 Questions/Feedback
 ------------------
 
-File an issue in the [GitHub issue tracker](https://github.com/bprinty/animation/issues).
+File an issue in the `GitHub issue tracker <https://github.com/bprinty/animation/issues>`_.
