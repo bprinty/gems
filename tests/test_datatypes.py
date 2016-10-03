@@ -10,6 +10,7 @@
 # imports
 # -------
 import os
+import uuid
 import unittest
 from gems import composite, filetree
 
@@ -53,6 +54,17 @@ class TestComposite(unittest.TestCase):
         data = composite.load(open(os.path.join(__resources__, 'list.json'), 'r'))
         self.assertEqual(data.keys(), None)
         self.assertEqual(len(data), 3)
+        return
+
+    def test_write(self):
+        data = composite(self._dict)
+        fname = '.datatypes-test-' + str(uuid.uuid1()) + '.json'
+        with open(fname, 'w') as of:
+            data.write(of, pretty=True)
+        with open(fname, 'r') as fi:
+            data2 = composite.load(fi)
+        self.assertEqual(data, data2)
+        os.remove(fname)
         return
 
     def test_properties(self):

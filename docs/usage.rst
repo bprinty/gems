@@ -15,7 +15,7 @@ Currently, the following objects are available (this list will grow with time an
 
 
 composite
----------
+~~~~~~~~~
 
 The :class:`gems.composite` object abstracts away the complexity associated with managing heavily nested JSON-based structures, allowing easier access to internal properties, and providing operators that work with the data in an intuitive way. Here is a simple example of how to use the :class:`composite` type in a project:
 
@@ -35,9 +35,20 @@ The :class:`gems.composite` object abstracts away the complexity associated with
     True
 
 
-In the example above, an arbitrary data structure is provided as an argument to the ``composite`` object, and is transformed into an object where properties can be traversed more gracefully (syntactically).
+In the example above, an arbitrary data structure is provided as an argument to the ``composite`` object, and is transformed into an object where properties can be traversed more gracefully (syntactically). You can also load a composite object from a json file like so:
 
-There are also operations tied to ``composite`` objects. If two composite objects or a composite object and another similar type are added, you get a ``composite`` object as a result that combines the objects in an intuitive way:
+.. code-block:: python
+
+    >>> from gems import composite
+    >>>
+    >>> with open('data.json', 'r') as fi:
+    >>>     data = composite.load(fi)
+    >>>
+    >>> print data.four.five[1]
+    6
+
+
+Some of the main features of ``composite`` objects that make them particularly useful are operators for interacting with the structure. For instance, if two composite objects or a composite object and another similar type are added, you get a ``composite`` object as a result that combines the objects in an intuitive way:
 
 .. code-block:: python
 
@@ -80,6 +91,20 @@ Other operations like this also can be used with the ``composite`` object. For e
     True
     >>> data == data2
     False
+
+
+Finally, you can write composite objects back to JSON files easily:
+
+.. code-block:: python
+
+    >>> # change the data in the object
+    >>> data.four.five = 2
+    >>>
+    >>> with open('newdata.json', 'w') as nd:
+    >>>     data.write(nd)
+
+
+By default, this will sort keys and pretty-print to the file, but if you just want to print the raw json to file, use ``pretty=False``.
 
 
 filetree
