@@ -286,8 +286,10 @@ class filetree(object):
         /full/path/to/mydir/two/five six/eight.config
     """
 
-    def __init__(self, directory, ignore=r"^[._]"):
+    def __init__(self, directory, ignore=r"^[._]", regex=r".*"):
         self.root = os.path.realpath(directory)
+        self.ignore = ignore
+        self.regex = regex
         self._data = {}
         for item in os.listdir(self.root):
             if ignore is not None:
@@ -295,9 +297,10 @@ class filetree(object):
                     continue
             fullpath = os.path.realpath(os.path.join(self.root, item))
             if os.path.isdir(fullpath):
-                self._data[os.path.basename(fullpath)] = filetree(fullpath)
+                self._data[os.path.basename(fullpath)] = filetree(fullpath, ignore=ignore, regex=regex)
             else:
-                self._data[os.path.basename(fullpath)] = fullpath
+                if re.search(regex, fullpath):
+                    self._data[os.path.basename(fullpath)] = fullpath
         return
 
     def __len__(self):
@@ -348,7 +351,23 @@ class filetree(object):
         return True
 
     def __eq__(self, other):
-        return self._data == other._data
+        sf = sorted(self.files())
+        of = sorted(other.files())
+        if len(sf) != len(of):
+            return False
+        for i in range(0, len(sf)):
+            if sf[i] != of[i]:
+                return False
+        return True
+
+    def get(self, item):
+        """
+        Safe way to get items, similar to __dict__.get().
+
+        Args:
+            item (str): Item to get in file tree.
+        """
+        return self._data.get(item)
 
     def json(self):
         """
@@ -361,3 +380,25 @@ class filetree(object):
             else:
                 data[item] = self._data[item]
         return data
+
+    def files(self):
+        """
+        Return list of files in filetree.
+        """
+        filelist = []
+        for item in self._data:
+            if isinstance(self._data[item], filetree):
+                filelist.extend(self._data[item].files())
+            else:
+                filelist.append(self._data[item])
+        return filelist
+
+    def prune(self, regex=r".*"):
+        """
+        Prune leaves of filetree according to specified
+        regular expression.
+
+        Args:
+            regex (str): Regular expression to use in pruning tree.
+        """
+        return filetree(self.root, ignore=self.ignore, regex=regex)

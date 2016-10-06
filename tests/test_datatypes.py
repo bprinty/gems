@@ -176,3 +176,29 @@ class TestFiletree(unittest.TestCase):
         self.assertFalse('fakefile' in data)
         return
 
+    def test_get(self):
+        data = filetree(self._dir)
+        self.assertTrue('tests/test_datatypes.py' in data.tests.get('test_datatypes.py'))
+        self.assertEqual(data.tests.get('test_datatypes.pypy'), None)
+        return
+
+    def test_json(self):
+        data = filetree(self._dir)
+        json = data.json()
+        self.assertEqual(sorted(json.keys()), sorted([name for name in data._data]))
+        self.assertEqual(json['tests']['resources']['dict.json'], data.tests.resources['dict.json'])
+        return
+
+    def test_match(self):
+        data = filetree(self._dir, regex=r".*.json$")
+        self.assertEqual(len(data.files()), 2)
+        self.assertTrue('dict.json' in sorted(data.files())[0])
+        self.assertTrue('list.json' in sorted(data.files())[1])
+        return
+
+    def test_prune(self):
+        raw = filetree(self._dir)
+        data = filetree(self._dir, regex=r".*.json$")
+        pruned = data.prune(r".*.json$")
+        self.assertEqual(data, pruned)
+        return

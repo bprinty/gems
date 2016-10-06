@@ -143,5 +143,45 @@ The :class:`gems.filetree` structure also allows for traversal of the file data 
     >>> print data.two['five six']['eight.config']
     /full/path/to/mydir/two/five six/eight.config
 
-Using JSON-based access is much easier and cleaner than doing many ``os.path.join`` operations to create the full paths to objects on your filesystem. 
+Using JSON-based access is much easier and cleaner than doing many ``os.path.join`` operations to create the full paths to objects on your filesystem. You can also create a json structure from the filetree:
+
+.. code-block:: python
+
+    >>> print data.json()
+    {
+        "one": {
+            "two.txt": "/path/to/mydir/one/two.txt",
+            "three.json": "/path/to/mydir/one/three.json"
+        },
+        "two": {
+            "three": {
+                "four.txt": "/path/to/mydir/two/three/four.txt"
+            },
+            "five six": {
+                "seven.txt": "/path/to/mydir/two/five six/seven.txt"
+            },
+            "eight.config": "/path/to/mydir/two/eight.config"
+        }
+    }
+
+Or, if you just want to see a list of all files in the filetree, you can do the following:
+
+.. code-block:: python
+
+    >>> print data.files()
+    '/path/to/mydir/one/two.txt'
+    '/path/to/mydir/one/three.json'
+    '/path/to/mydir/two/three/four.txt'
+    '/path/to/mydir/two/five six/seven.txt'
+    '/path/to/mydir/two/eight.config'
+
+Finally, to prune the tree for specific files and create a new filetree object:
+
+.. code-block:: python
+    
+    >>> newtree = data.prune(regex=".*.txt$")
+    >>> print newtree.files()
+    '/path/to/mydir/one/two.txt'
+    '/path/to/mydir/two/three/four.txt'
+    '/path/to/mydir/two/five six/seven.txt'
 
