@@ -342,7 +342,7 @@ class filetree(object):
 
     def __getitem__(self, item):
         if item not in self._data:
-            raise AttributeError('filetree object has no attribute {}!'.format(item))
+            raise KeyError('filetree object has no attribute {}!'.format(item))
         return self._data[item]
 
     def __contains__(self, item):
@@ -356,7 +356,7 @@ class filetree(object):
             while idx < len(subpaths):
                 cdata = cdata[subpaths[idx]]
                 idx += 1
-        except AttributeError:
+        except KeyError:
             return False
         return True
 

@@ -211,3 +211,12 @@ class TestFiletree(unittest.TestCase):
         pruned = data.prune(r".*.json$")
         self.assertEqual(data, pruned)
         return
+
+    def test_exceptions(self):
+        raw = filetree(self._dir)
+        with self.assertRaises(KeyError):
+            raw['notafile']
+        with self.assertRaises(AttributeError):
+            raw.notafile
+        return
+
