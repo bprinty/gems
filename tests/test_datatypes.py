@@ -156,6 +156,15 @@ class TestComposite(unittest.TestCase):
         self.assertNotEqual(data, composite(self._list))
         return
 
+    def test_exceptions(self):
+        data = composite(self._dict)
+        with self.assertRaises(KeyError):
+            data['notakey']
+        with self.assertRaises(AttributeError):
+            data.notakey
+        return
+
+
 class TestFiletree(unittest.TestCase):
     _dir = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 

@@ -103,7 +103,10 @@ class composite(object):
                 yield entry
 
     def __getattr__(self, name):
-        return self._dict.get(name)
+        if name in self._dict:
+            return self._dict[name]
+        else:
+            raise AttributeError('\'composite\' object has no attribute {}'.format(name))
 
     def __getitem__(self, item):
         if len(self._list) != 0:
@@ -111,7 +114,7 @@ class composite(object):
         elif len(self._dict) != 0:
             return self._dict[item]
         else:
-            return None
+            raise KeyError(str(item))
 
     def __setattr__(self, name, value):
         if name == '_list' or name == '_dict':
@@ -198,6 +201,13 @@ class composite(object):
                 return self._dict == other
             else:
                 return False
+        return
+
+    def get(self):
+        """
+        Return item or None, depending on if item exists. This is
+        meant to be similar to dict.get() for safe access of a property.
+        """
         return
 
     def keys(self):
