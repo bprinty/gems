@@ -8,9 +8,51 @@
 
 # imports
 # -------
-import json
 import os
 import re
+import json
+from functools import wraps
+import warnings
+
+
+# decorators
+# ----------
+def depricated_name(newmethod):
+    """
+    Decorator for warning user of depricated functions before use.
+
+    Args:
+        newmethod (str): Name of method to use instead.
+    """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            warnings.simplefilter('always', DeprecationWarning) 
+            warnings.warn(
+                "Function {} is depricated, please use {} instead.".format(func.__name__, newmethod),
+                category=DeprecationWarning, stacklevel=2
+            )
+            warnings.simplefilter('default', DeprecationWarning)
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
+def deprecated(func):
+    """
+    Decorator for warning user of depricated functions before use.
+    """
+    @wraps(func)
+    def decorator(*args, **kwargs):
+        # warnings.simplefilter('always', DeprecationWarning)
+        warnings.warn(
+            "Function {} is depricated. Consult the documentation for a better way of performing this task.".format(func.__name__),
+            category=DeprecationWarning, stacklevel=2
+        )
+        # warnings.simplefilter('default', DeprecationWarning)
+        return func(*args, **kwargs)
+    return decorator
+
 
 
 # data management
@@ -457,6 +499,7 @@ class filetree(object):
             else:
                 if re.search(regex, fullpath):
                     self._data[os.path.basename(fullpath)] = fullpath
+        self._filelist = []
         return
 
     def __len__(self):
@@ -507,8 +550,8 @@ class filetree(object):
         return True
 
     def __eq__(self, other):
-        sf = sorted(self.files())
-        of = sorted(other.files())
+        sf = sorted(self.filelist())
+        of = sorted(other.filelist())
         if len(sf) != len(of):
             return False
         for i in range(0, len(sf)):
@@ -537,17 +580,21 @@ class filetree(object):
                 data[item] = self._data[item]
         return data
 
+    @depricated_name('filelist()')
     def files(self):
+        return self.filelist()
+
+    def filelist(self):
         """
         Return list of files in filetree.
         """
-        filelist = []
-        for item in self._data:
-            if isinstance(self._data[item], filetree):
-                filelist.extend(self._data[item].files())
-            else:
-                filelist.append(self._data[item])
-        return filelist
+        if len(self._filelist) == 0:
+            for item in self._data:
+                if isinstance(self._data[item], filetree):
+                    self._filelist.extend(self._data[item].filelist())
+                else:
+                    self._filelist.append(self._data[item])
+        return self._filelist
 
     def prune(self, regex=r".*"):
         """

@@ -245,9 +245,9 @@ class TestFiletree(unittest.TestCase):
 
     def test_match(self):
         data = filetree(self._dir, regex=r".*.json$")
-        self.assertEqual(len(data.files()), 2)
-        self.assertTrue('dict.json' in sorted(data.files())[0])
-        self.assertTrue('list.json' in sorted(data.files())[1])
+        self.assertEqual(len(data.filelist()), 2)
+        self.assertTrue('dict.json' in sorted(data.filelist())[0])
+        self.assertTrue('list.json' in sorted(data.filelist())[1])
         return
 
     def test_prune(self):
