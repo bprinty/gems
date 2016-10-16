@@ -92,6 +92,52 @@ Other operations like this also can be used with the ``composite`` object. For e
     >>> data == data2
     False
 
+Along with these operators, ``composite`` objects also extend set-based functionality for reducing data. For example:
+
+.. code-block:: python
+    
+    >>> # initialize some data
+    >>> c1 = composite({
+    >>>     'one': 1,
+    >>>     'two': [1, 2],
+    >>>     'three': {'four': 5, 'five': 7},
+    >>>     'eight': 8
+    >>> })
+    >>> c2 = composite({
+    >>>     'one': 1,
+    >>>     'two': [1, 2, 3],
+    >>>     'three': {'four': 5, 'six': 7},
+    >>>     'eight': 9,
+    >>>     'nine': 10
+    >>> })
+    >>>
+    >>> # take the recursive intersection of the data structures
+    >>> print c1.intersection(c2)
+    {
+        'one': 1,
+        'two': [1, 2],
+        'three': {'four': 5},
+    }
+    >>>
+    >>> # take the recursive difference of the data structures
+    >>> print c2.difference(c1)
+    {
+        'two': [3],
+        'three': {'six': 7},
+        'eight': 9,
+        'nine': 10
+    }
+    >>>
+    >>> # take the recursive union of the data structures
+    >>> print c1.union(c2)
+    {
+        'one': 1,
+        'two': [1, 2, 3],
+        'three': {'four': 5, 'five': 7, 'six': 7},
+        'eight': [8, 9],
+        'nine': 10
+    }
+
 
 Finally, you can write composite objects back to JSON files easily:
 
@@ -108,7 +154,7 @@ By default, this will sort keys and pretty-print to the file, but if you just wa
 
 
 filetree
---------
+~~~~~~~~
 
 Traversal of a filetree is typically a pain in python. You could use ``os.path.walk`` to within a recursive function to accomplish it, but there should be an easier way. That's where the :class:`gems.filetree` comes in handy. Here is an example of how to use the :class:`gems.filetree` type in a project:
 
@@ -143,7 +189,7 @@ The :class:`gems.filetree` structure also allows for traversal of the file data 
     >>> print data.two['five six']['eight.config']
     /full/path/to/mydir/two/five six/eight.config
 
-Using JSON-based access is much easier and cleaner than doing many ``os.path.join`` operations to create the full paths to objects on your filesystem. You can also create a json structure from the filetree:
+As you can see in the example above, using JSON-based access is much easier and cleaner than doing many ``os.path.join`` operations to create the full paths to objects on your filesystem. You can also create a json structure from the filetree:
 
 .. code-block:: python
 
@@ -184,4 +230,3 @@ Finally, to prune the tree for specific files and create a new filetree object:
     '/path/to/mydir/one/two.txt'
     '/path/to/mydir/two/three/four.txt'
     '/path/to/mydir/two/five six/seven.txt'
-

@@ -14,6 +14,8 @@ import uuid
 import unittest
 from gems import composite, filetree
 
+from nose.tools import nottest
+
 
 # config
 # ______
@@ -33,6 +35,19 @@ class TestComposite(unittest.TestCase):
         1, {'two': 3, 'four': 'five', 'six': [7, 8, 9, 'ten']},
         [11, 12, {'thirteen': 'fourteen', 'fifteen': 16, 'seventeen': [18]}]
     ]
+    _c1 = composite({
+        'one': 1,
+        'two': [1, 2],
+        'three': {'four': 5, 'five': 7},
+        'eight': 8
+    })
+    _c2 = composite({
+        'one': 1,
+        'two': [1, 2, 3],
+        'three': {'four': 5, 'six': 7},
+        'eight': 9,
+        'nine': 10
+    })
 
     def test_load(self):
         data = composite(self._dict)
@@ -162,6 +177,36 @@ class TestComposite(unittest.TestCase):
             data['notakey']
         with self.assertRaises(AttributeError):
             data.notakey
+        return
+
+    def test_intersection(self):
+        result = composite({
+            'one': 1,
+            'two': [1, 2],
+            'three': {'four': 5},
+        })
+        self.assertEqual(self._c1.intersection(self._c2), result)
+        return
+
+    def test_difference(self):
+        result = composite({
+            'two': [3],
+            'three': {'six': 7},
+            'eight': 9,
+            'nine': 10
+        })
+        self.assertEqual(self._c2.difference(self._c1), result)
+        return
+
+    def test_union(self):
+        result = composite({
+            'one': 1,
+            'two': [1, 2, 3],
+            'three': {'four': 5, 'five': 7, 'six': 7},
+            'eight': [8, 9],
+            'nine': 10
+        })
+        self.assertEqual(self._c1.union(self._c2), result)
         return
 
 

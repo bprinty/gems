@@ -39,23 +39,28 @@ class composite(object):
     def __init__(self, data):
         self._list = []
         self._dict = {}
+        self.meta_type = None
 
         if isinstance(data, file):
             data = json.load(data)
 
         if isinstance(data, (list, tuple)):
-            for dat in data:
-                if not isinstance(dat, (list, tuple, dict)):
-                    self._list.append(dat)
-                else:
-                    self._list.append(composite(dat))
+            if len(data) > 0:
+                for dat in data:
+                    if not isinstance(dat, (list, tuple, dict)):
+                        self._list.append(dat)
+                    else:
+                        self._list.append(composite(dat))
+                self.meta_type = 'list'
 
         elif isinstance(data, dict):
-            for key in data:
-                if not isinstance(data[key], (list, tuple, dict)):
-                    self._dict[key] = data[key]
-                else:
-                    self._dict[key] = composite(data[key])
+            if len(data) > 0:
+                for key in data:
+                    if not isinstance(data[key], (list, tuple, dict)):
+                        self._dict[key] = data[key]
+                    else:
+                        self._dict[key] = composite(data[key])
+                self.meta_type = 'dict'
         return
 
     @classmethod
@@ -94,11 +99,11 @@ class composite(object):
         return str(self.json())
 
     def __iter__(self):
-        if len(self._list) != 0:
+        if self.meta_type == 'list':
             for entry in self._list:
                 yield entry
 
-        elif len(self._dict) != 0:
+        elif self.meta_type == 'dict':
             for entry in self._dict:
                 yield entry
 
@@ -109,31 +114,36 @@ class composite(object):
             raise AttributeError('\'composite\' object has no attribute {}'.format(name))
 
     def __getitem__(self, item):
-        if len(self._list) != 0:
+        if self.meta_type == 'list':
             return self._list[item]
-        elif len(self._dict) != 0:
+        elif self.meta_type == 'dict':
             return self._dict[item]
         else:
             raise KeyError(str(item))
 
     def __setattr__(self, name, value):
-        if name == '_list' or name == '_dict':
+        if name == '_list' or name == '_dict' or name == 'meta_type':
             super(composite, self).__setattr__(name, value)
         else:
             self._dict[name] = value
 
     def __setitem__(self, idx, value):
-        if len(self._list) != 0:
+        if self.meta_type == 'list':
             self._list[idx] = value
-        elif len(self._dict) != 0:
+        elif self.meta_type == 'dict':
             self._dict[idx] = value
 
     def __add__(self, other):
-        if len(self._list) != 0:
+        # TODO: Think about doing a recursive addition of all the
+        #       properties -- for strings, concat, for ints, add, etc.
+        #       Get feedback about this, and see if it intuitively makes
+        #       sense. Since we have set-based operators now, it makes
+        #       sense.
+        if self.meta_type == 'list':
             if isinstance(other, composite):
-                if len(other._list) != 0:
+                if other.meta_type == 'list':
                     return composite(self._list + other._list)
-                elif len(other._dict) != 0:
+                elif other.meta_type == 'dict':
                     return composite([self._list, other._dict])
                 else:
                     return self
@@ -143,11 +153,11 @@ class composite(object):
                 return composite(self._list + other)
             else:
                 return composite(self._list + [other])
-        elif len(self._dict) != 0:
+        elif self.meta_type == 'dict':
             if isinstance(other, composite):
-                if len(other._list) != 0:
+                if other.meta_type == 'list':
                     return composite([self._dict, other._list])
-                elif len(other._dict) != 0:
+                elif other.meta_type == 'dict':
                     newdict = {}
                     for k in self._dict:
                         newdict[k] = self._dict[k]
@@ -173,17 +183,17 @@ class composite(object):
         return
 
     def __contains__(self, item):
-        if len(self._list) != 0:
+        if self.meta_type == 'list':
             return item in self._list
-        elif len(self._dict) != 0:
+        elif self.meta_type == 'dict':
             return item in self._dict
 
     def __eq__(self, other):
-        if len(self._list) != 0:
+        if self.meta_type == 'list':
             if isinstance(other, composite):
-                if len(other._list) != 0:
+                if other.meta_type == 'list':
                     return self._list == other._list
-                elif len(other._dict) != 0:
+                elif other.meta_type == 'dict':
                     return False
             elif isinstance(other, dict):
                 return False
@@ -191,11 +201,11 @@ class composite(object):
                 return self._list == other
             else:
                 return False
-        elif len(self._dict) != 0:
+        elif self.meta_type == 'dict':
             if isinstance(other, composite):
-                if len(other._list) != 0:
+                if other.meta_type == 'list':
                     return False
-                elif len(other._dict) != 0:
+                elif other.meta_type == 'dict':
                     return self._dict == other._dict
             elif isinstance(other, dict):
                 return self._dict == other
@@ -203,27 +213,163 @@ class composite(object):
                 return False
         return
 
-    def get(self):
+    def intersection(self, other, recursive=True):
+        """
+        Recursively compute intersection of data. For dictionaries, items
+        for specific keys will be reduced to unique items. For lists, items
+        will be reduced to unique items. This method is meant to be analogous
+        to set.intersection for composite objects.
+
+        Args:
+            other (composite): Other composite object to intersect with.
+            recursive (bool): Whether or not to perform the operation recursively,
+                for all nested composite objects.
+        """
+        if not isinstance(other, composite):
+            raise AssertionError('Cannot intersect composite and {} types'.format(type(other)))
+        
+        if self.meta_type != other.meta_type:
+            return None
+
+        if self.meta_type == 'list':
+            keep = []
+            for item in self._list:
+                if item in other._list:
+                    if recursive and isinstance(item, composite):
+                        keep.extend(item.intersection(other.index(item), recursive=True))
+                    else:
+                        keep.append(item)
+            return composite(keep)
+        elif self.meta_type == 'dict':
+            keep = {}
+            for key in self._dict:
+                item = self._dict[key]
+                if key in other._dict:
+                    if recursive and \
+                       isinstance(item, composite) and \
+                       isinstance(other.get(key), composite):
+                       keep[key] = item.intersection(other.get(key), recursive=True)
+                    elif item == other[key]:
+                        keep[key] = item
+            return composite(keep)
+        return
+
+    def difference(self, other, recursive=True):
+        """
+        Recursively compute difference of data. For dictionaries, items
+        for specific keys will be reduced to differences. For lists, items
+        will be reduced to differences. This method is meant to be analogous
+        to set.difference for composite objects.
+
+        Args:
+            other (composite): Other composite object to difference with.
+            recursive (bool): Whether or not to perform the operation recursively,
+                for all nested composite objects.
+        """
+        if not isinstance(other, composite):
+            raise AssertionError('Cannot difference composite and {} types'.format(type(other)))
+        
+        if self.meta_type != other.meta_type:
+            return self
+
+        if self.meta_type == 'list':
+            keep = []
+            for item in self._list:
+                if item not in other._list:
+                    if recursive and isinstance(item, composite):
+                        keep.extend(item.difference(other.index(item), recursive=True))
+                    else:
+                        keep.append(item)
+            return composite(keep)
+        elif self.meta_type == 'dict':
+            keep = {}
+            for key in self._dict:
+                item = self._dict[key]
+                if key in other._dict:
+                    if recursive and \
+                       isinstance(item, composite) and \
+                       isinstance(other.get(key), composite):
+                       keep[key] = item.difference(other.get(key), recursive=True)
+                    elif item != other[key]:
+                        keep[key] = item
+                else:
+                    keep[key] = item
+            return composite(keep)
+        return
+
+    def union(self, other, recursive=True):
+        """
+        Recursively compute union of data. For dictionaries, items
+        for specific keys will be combined. For lists, items will be appended
+        and reduced to unique items. This method is meant to be analogous
+        to set.union for composite objects.
+
+        Args:
+            other (composite): Other composite object to union with.
+            recursive (bool): Whether or not to perform the operation recursively,
+                for all nested composite objects.
+        """
+        if not isinstance(other, composite):
+            raise AssertionError('Cannot union composite and {} types'.format(type(other)))
+        
+        if self.meta_type != other.meta_type:
+            return composite([self, other])
+
+        if self.meta_type == 'list':
+            keep = []
+            for item in self._list:
+                keep.append(item)
+            for item in other._list:
+                if item not in self._list:
+                    keep.append(item)
+            return composite(keep)
+        elif self.meta_type == 'dict':
+            keep = {}
+            for key in list(set(self._dict.keys() + other._dict.keys())):
+                left = self._dict.get(key)
+                right = other._dict.get(key)
+                if recursive and \
+                   isinstance(left, composite) and \
+                   isinstance(right, composite):
+                    keep[key] = left.union(right, recursive=True)
+                elif left == right:
+                    keep[key] = left
+                elif left is None:
+                    keep[key] = right
+                elif right is None:
+                    keep[key] = left
+                else:
+                    keep[key] = composite([left, right])
+            return composite(keep)
+        return
+
+    def index(self, item):
+        """
+        Return index containing value.
+        """
+        return self._list.index(item)
+
+    def get(self, item):
         """
         Return item or None, depending on if item exists. This is
         meant to be similar to dict.get() for safe access of a property.
         """
-        return
+        return self._dict.get(item)
 
     def keys(self):
         """
         Return keys for object, if they are available.
         """
-        if len(self._list) != 0:
+        if self.meta_type == 'list':
             return None
-        elif len(self._dict) != 0:
+        elif self.meta_type == 'dict':
             return self._dict.keys()
 
     def json(self):
         """
         Return JSON representation of object.
         """
-        if len(self._list) != 0:
+        if self.meta_type == 'list':
             ret = []
             for dat in self._list:
                 if not isinstance(dat, composite):
@@ -232,7 +378,7 @@ class composite(object):
                     ret.append(dat.json())
             return ret
 
-        elif len(self._dict) != 0:
+        elif self.meta_type == 'dict':
             ret = {}
             for key in self._dict:
                 if not isinstance(self._dict[key], composite):
