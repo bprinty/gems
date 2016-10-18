@@ -186,6 +186,9 @@ class TestComposite(unittest.TestCase):
             'three': {'four': 5},
         })
         self.assertEqual(self._c1.intersection(self._c2), result)
+        empty = self._c1.intersection(composite({'five': 7}))
+        self.assertTrue(isinstance(empty, composite))
+        self.assertEqual(len(empty), 0)
         return
 
     def test_difference(self):

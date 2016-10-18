@@ -148,12 +148,14 @@ class composite(object):
         elif self.meta_type == 'dict':
             for entry in self._dict:
                 yield entry
+        return
 
     def __getattr__(self, name):
         if name in self._dict:
             return self._dict[name]
         else:
             raise AttributeError('\'composite\' object has no attribute {}'.format(name))
+        return
 
     def __getitem__(self, item):
         if self.meta_type == 'list':
@@ -162,18 +164,21 @@ class composite(object):
             return self._dict[item]
         else:
             raise KeyError(str(item))
+        return
 
     def __setattr__(self, name, value):
         if name == '_list' or name == '_dict' or name == 'meta_type':
             super(composite, self).__setattr__(name, value)
         else:
             self._dict[name] = value
+        return
 
     def __setitem__(self, idx, value):
         if self.meta_type == 'list':
             self._list[idx] = value
         elif self.meta_type == 'dict':
             self._dict[idx] = value
+        return
 
     def __add__(self, other):
         # TODO: Think about doing a recursive addition of all the
@@ -271,7 +276,7 @@ class composite(object):
             raise AssertionError('Cannot intersect composite and {} types'.format(type(other)))
         
         if self.meta_type != other.meta_type:
-            return None
+            return composite({})
 
         if self.meta_type == 'list':
             keep = []
