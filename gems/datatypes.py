@@ -87,22 +87,30 @@ class composite(object):
             data = json.load(data)
 
         if isinstance(data, (list, tuple)):
-            if len(data) > 0:
-                for dat in data:
-                    if not isinstance(dat, (list, tuple, dict)):
-                        self._list.append(dat)
-                    else:
-                        self._list.append(composite(dat))
-                self.meta_type = 'list'
+            for dat in data:
+                if not isinstance(dat, (list, tuple, dict)):
+                    self._list.append(dat)
+                else:
+                    self._list.append(composite(dat))
+            self.meta_type = 'list'
 
         elif isinstance(data, dict):
-            if len(data) > 0:
-                for key in data:
-                    if not isinstance(data[key], (list, tuple, dict)):
-                        self._dict[key] = data[key]
-                    else:
-                        self._dict[key] = composite(data[key])
-                self.meta_type = 'dict'
+            for key in data:
+                if not isinstance(data[key], (list, tuple, dict)):
+                    self._dict[key] = data[key]
+                else:
+                    self._dict[key] = composite(data[key])
+            self.meta_type = 'dict'
+
+        elif isinstance(data, composite):
+            self.meta_type = data.meta_type
+            if data.meta_type == 'dict':
+                self._dict = data._dict
+            elif data.meta_type == 'list':
+                self._list = data._list
+
+        else:
+            raise TypeError('unsupported type for creating composite: {}'.format(type(data)))
         return
 
     @classmethod
@@ -187,22 +195,26 @@ class composite(object):
         #       sense. Since we have set-based operators now, it makes
         #       sense.
         if self.meta_type == 'list':
-            if isinstance(other, composite):
-                if other.meta_type == 'list':
+            if isinstance(other, (composite, dict, list, tuple)):
+                other = composite(other)
+                if len(self) == 0:
+                    return other
+                elif len(other) == 0:
+                    return self
+                elif other.meta_type == 'list':
                     return composite(self._list + other._list)
                 elif other.meta_type == 'dict':
                     return composite([self._list, other._dict])
-                else:
-                    return self
-            elif isinstance(other, dict):
-                return composite([self._list, other])
-            elif isinstance(other, (list, tuple)):
-                return composite(self._list + other)
             else:
                 return composite(self._list + [other])
         elif self.meta_type == 'dict':
-            if isinstance(other, composite):
-                if other.meta_type == 'list':
+            if isinstance(other, (composite, dict, list, tuple)):
+                other = composite(other)
+                if len(self) == 0:
+                    return other
+                elif len(other) == 0:
+                    return self
+                elif other.meta_type == 'list':
                     return composite([self._dict, other._list])
                 elif other.meta_type == 'dict':
                     newdict = {}
@@ -211,22 +223,8 @@ class composite(object):
                     for k in other._dict:
                         newdict[k] = other._dict[k]
                     return composite(newdict)
-                else:
-                    return self
-            elif isinstance(other, dict):
-                newdict = {}
-                for k in self._dict:
-                    newdict[k] = self._dict[k]
-                for k in other:
-                    newdict[k] = other[k]
-                return composite(newdict)
             else:
                 return composite([self._dict, other])
-        else:
-            if isinstance(other, composite):
-                return other
-            else:
-                return composite(other)
         return
 
     def __contains__(self, item):
@@ -275,7 +273,7 @@ class composite(object):
         if not isinstance(other, composite):
             raise AssertionError('Cannot intersect composite and {} types'.format(type(other)))
         
-        if self.meta_type != other.meta_type or self.meta_type is None:
+        if self.meta_type != other.meta_type:
             return composite({})
 
         if self.meta_type == 'list':
@@ -316,7 +314,7 @@ class composite(object):
         if not isinstance(other, composite):
             raise AssertionError('Cannot difference composite and {} types'.format(type(other)))
         
-        if self.meta_type != other.meta_type or self.meta_type is None:
+        if self.meta_type != other.meta_type:
             return self
 
         if self.meta_type == 'list':
@@ -359,7 +357,7 @@ class composite(object):
         if not isinstance(other, composite):
             raise AssertionError('Cannot union composite and {} types'.format(type(other)))
         
-        if self.meta_type != other.meta_type or self.meta_type is None:
+        if self.meta_type != other.meta_type:
             return composite([self, other])
 
         if self.meta_type == 'list':
