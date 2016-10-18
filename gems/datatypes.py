@@ -275,7 +275,7 @@ class composite(object):
         if not isinstance(other, composite):
             raise AssertionError('Cannot intersect composite and {} types'.format(type(other)))
         
-        if self.meta_type != other.meta_type:
+        if self.meta_type != other.meta_type or self.meta_type is None:
             return composite({})
 
         if self.meta_type == 'list':
@@ -316,7 +316,7 @@ class composite(object):
         if not isinstance(other, composite):
             raise AssertionError('Cannot difference composite and {} types'.format(type(other)))
         
-        if self.meta_type != other.meta_type:
+        if self.meta_type != other.meta_type or self.meta_type is None:
             return self
 
         if self.meta_type == 'list':
@@ -359,7 +359,7 @@ class composite(object):
         if not isinstance(other, composite):
             raise AssertionError('Cannot union composite and {} types'.format(type(other)))
         
-        if self.meta_type != other.meta_type:
+        if self.meta_type != other.meta_type or self.meta_type is None:
             return composite([self, other])
 
         if self.meta_type == 'list':
