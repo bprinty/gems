@@ -11,6 +11,7 @@
 import os
 import re
 import json
+import io
 from functools import wraps
 import warnings
 
@@ -83,7 +84,7 @@ class composite(object):
         self._dict = {}
         self.meta_type = None
 
-        if isinstance(data, file):
+        if isinstance(data, io.IOBase):
             data = json.load(data)
 
         if isinstance(data, (list, tuple)):
@@ -370,7 +371,7 @@ class composite(object):
             return composite(keep)
         elif self.meta_type == 'dict':
             keep = {}
-            for key in list(set(self._dict.keys() + other._dict.keys())):
+            for key in list(set(list(self._dict.keys()) + list(other._dict.keys()))):
                 left = self._dict.get(key)
                 right = other._dict.get(key)
                 if recursive and \

@@ -20,8 +20,8 @@ with open('requirements.txt', 'r') as reqs:
     requirements = map(lambda x: x.rstrip(), reqs.readlines())
 
 test_requirements = [
-    'nose==1.3.7',
-    'nose-parameterized==0.5.0'
+    'nose',
+    'nose-parameterized'
 ]
 
 

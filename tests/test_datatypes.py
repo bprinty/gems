@@ -56,7 +56,8 @@ class TestComposite(unittest.TestCase):
         data = composite.from_string(str(self._dict))
         self.assertEqual(sorted(data.keys()), sorted(self._dict.keys()))
         self.assertEqual(len(data), 4)
-        data = composite.load(open(os.path.join(__resources__, 'dict.json'), 'r'))
+        with open(os.path.join(__resources__, 'dict.json'), 'r') as fi:
+            data = composite.load(fi)
         self.assertEqual(sorted(data.keys()), sorted(self._dict.keys()))
         self.assertEqual(len(data), 4)
 
@@ -66,7 +67,8 @@ class TestComposite(unittest.TestCase):
         data = composite.from_string(str(self._list))
         self.assertEqual(data.keys(), None)
         self.assertEqual(len(data), 3)
-        data = composite.load(open(os.path.join(__resources__, 'list.json'), 'r'))
+        with open(os.path.join(__resources__, 'list.json'), 'r') as fi:
+            data = composite.load(fi)
         self.assertEqual(data.keys(), None)
         self.assertEqual(len(data), 3)
         return
