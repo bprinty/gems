@@ -16,9 +16,8 @@ except ImportError:
 
 import gems
 
-requirements = [
-    # TODO: nothing yet
-]
+with open('requirements.txt', 'r') as reqs:
+    requirements = map(lambda x: x.rstrip(), reqs.readlines())
 
 test_requirements = [
     # TODO: put package test requirements here
@@ -41,11 +40,8 @@ setup(
     author="Blake Printy",
     author_email='bprinty@gmail.com',
     url='https://github.com/bprinty/gems',
-    packages=[
-        'gems',
-    ],
-    package_dir={'gems':
-                 'gems'},
+    packages=['gems'],
+    package_dir={'gems': 'gems'},
     include_package_data=True,
     install_requires=requirements,
     license="Apache-2.0",
