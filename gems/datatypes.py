@@ -84,7 +84,7 @@ class composite(object):
         self._dict = {}
         self.meta_type = None
 
-        if isinstance(data, io.IOBase):
+        if hasattr(data, 'read'):
             data = json.load(data)
 
         if isinstance(data, (list, tuple)):
