@@ -20,7 +20,8 @@ with open('requirements.txt', 'r') as reqs:
     requirements = map(lambda x: x.rstrip(), reqs.readlines())
 
 test_requirements = [
-    # TODO: put package test requirements here
+    'nose==1.3.7',
+    'nose-parameterized==0.5.0'
 ]
 
 
@@ -58,5 +59,6 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
     ],
-    test_suite='nose.collector'
+    test_suite='nose.collector',
+    testa_require=test_requirements
 )

@@ -35,7 +35,7 @@ lint:
 	flake8 gems tests
 
 test:
-	nosetests -c setup.cfg tests
+	python setup.py test
 
 tag:
 	VER=$(VERSION) && if [ `git tag | grep "$$VER" | wc -l` -ne 0 ]; then git tag -d $$VER; fi
