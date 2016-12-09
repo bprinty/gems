@@ -35,13 +35,19 @@ The :class:`gems.composite` object abstracts away the complexity associated with
     True
 
 
-In the example above, an arbitrary data structure is provided as an argument to the ``composite`` object, and is transformed into an object where properties can be traversed more gracefully (syntactically). You can also load a composite object from a json file like so:
+In the example above, an arbitrary data structure is provided as an argument to the ``composite`` object, and is transformed into an object where properties can be traversed more gracefully (syntactically). You can also load a composite object from a json or yaml file like so:
 
 .. code-block:: python
 
     >>> from gems import composite
     >>>
     >>> with open('data.json', 'r') as fi:
+    >>>     data = composite.load(fi)
+    >>>
+    >>> print data.four.five[1]
+    6
+    >>>
+    >>> with open('data.yml', 'r') as fi:
     >>>     data = composite.load(fi)
     >>>
     >>> print data.four.five[1]

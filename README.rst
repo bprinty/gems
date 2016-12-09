@@ -65,7 +65,24 @@ The ``composite`` object abstracts away the complexity associated with managing 
     True
 
 
-In the example above, an arbitrary data structure is provided as an argument to the ``composite`` object, and is transformed into an object where properties can be traversed more gracefully (syntactically).
+In the example above, an arbitrary data structure is provided as an argument to the ``composite`` object, and is transformed into an object where properties can be traversed more gracefully (syntactically). You can also load a composite object from a json or yaml file like so:
+
+.. code-block:: python
+
+    >>> from gems import composite
+    >>>
+    >>> with open('data.json', 'r') as fi:
+    >>>     data = composite.load(fi)
+    >>>
+    >>> print data.four.five[1]
+    6
+    >>>
+    >>> with open('data.yml', 'r') as fi:
+    >>>     data = composite.load(fi)
+    >>>
+    >>> print data.four.five[1]
+    6
+
 
 There are also operations tied to ``composite`` objects. If two composite objects or a composite object and another similar type are added, you get a ``composite`` object as a result that combines the objects in an intuitive way:
 

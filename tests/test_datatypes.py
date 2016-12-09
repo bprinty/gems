@@ -217,6 +217,20 @@ class TestComposite(unittest.TestCase):
         self.assertEqual(self._c1.union(self._c2), result)
         return
 
+    def test_filetypes(self):
+        with open(os.path.join(__resources__, 'list.json'), 'r') as fi:
+            js = composite.from_json(fi)
+        with open(os.path.join(__resources__, 'list.yml'), 'r') as fi:
+            yml = composite.from_yaml(fi)
+        self.assertEqual(js, yml)
+
+        with open(os.path.join(__resources__, 'dict.json'), 'r') as fi:
+            js = composite.from_json(fi)
+        with open(os.path.join(__resources__, 'dict.yml'), 'r') as fi:
+            yml = composite.from_yaml(fi)
+        self.assertEqual(js, yml)
+        return
+
 
 class TestFiletree(unittest.TestCase):
     _dir = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))

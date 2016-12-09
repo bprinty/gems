@@ -11,49 +11,9 @@
 import os
 import re
 import json
-import io
-from functools import wraps
-import warnings
+import yaml
 
-
-# decorators
-# ----------
-def depricated_name(newmethod):
-    """
-    Decorator for warning user of depricated functions before use.
-
-    Args:
-        newmethod (str): Name of method to use instead.
-    """
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            warnings.simplefilter('always', DeprecationWarning) 
-            warnings.warn(
-                "Function {} is depricated, please use {} instead.".format(func.__name__, newmethod),
-                category=DeprecationWarning, stacklevel=2
-            )
-            warnings.simplefilter('default', DeprecationWarning)
-            return func(*args, **kwargs)
-        return wrapper
-    return decorator
-
-
-def deprecated(func):
-    """
-    Decorator for warning user of depricated functions before use.
-    """
-    @wraps(func)
-    def decorator(*args, **kwargs):
-        # warnings.simplefilter('always', DeprecationWarning)
-        warnings.warn(
-            "Function {} is depricated. Consult the documentation for a better way of performing this task.".format(func.__name__),
-            category=DeprecationWarning, stacklevel=2
-        )
-        # warnings.simplefilter('default', DeprecationWarning)
-        return func(*args, **kwargs)
-    return decorator
-
+from .utils import depricated_name, deprecated
 
 
 # data management
@@ -127,6 +87,34 @@ class composite(object):
             >>>    data = composite.load(json)
         """
         return cls(json.load(fh))
+
+    @classmethod
+    def from_json(cls, fh):
+        """
+        Load json from file handle.
+
+        Args:
+            fh (file): File handle to load from.
+
+        Examlple:
+            >>> with open('data.json', 'r') as json:
+            >>>    data = composite.load(json)
+        """
+        return cls.load(fh)
+
+    @classmethod
+    def from_yaml(cls, fh):
+        """
+        Load yaml from file handle.
+
+        Args:
+            fh (file): File handle to load from.
+
+        Examlple:
+            >>> with open('data.yml', 'r') as json:
+            >>>    data = composite.load(json)
+        """
+        return cls(yaml.load(fh))
 
     @classmethod
     def from_string(cls, string):
@@ -235,29 +223,13 @@ class composite(object):
             return item in self._dict
 
     def __eq__(self, other):
-        if self.meta_type == 'list':
-            if isinstance(other, composite):
-                if other.meta_type == 'list':
-                    return self._list == other._list
-                elif other.meta_type == 'dict':
-                    return False
-            elif isinstance(other, dict):
-                return False
-            elif isinstance(other, (list, tuple)):
-                return self._list == other
-            else:
-                return False
-        elif self.meta_type == 'dict':
-            if isinstance(other, composite):
-                if other.meta_type == 'list':
-                    return False
-                elif other.meta_type == 'dict':
-                    return self._dict == other._dict
-            elif isinstance(other, dict):
-                return self._dict == other
-            else:
-                return False
-        return
+        if isinstance(other, composite):
+            return self.json() == other.json()
+        else:
+            return self.json() == other
+
+    def __ne__(self, other):
+        return not (self == other)
 
     def intersection(self, other, recursive=True):
         """
