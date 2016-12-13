@@ -231,6 +231,14 @@ class TestComposite(unittest.TestCase):
         self.assertEqual(js, yml)
         return
 
+    def test_implicit_load(self):
+        with open(os.path.join(__resources__, 'list.json'), 'r') as fi:
+            js = composite.load(fi)
+        with open(os.path.join(__resources__, 'list.yml'), 'r') as fi:
+            yml = composite.load(fi)
+        self.assertEqual(js, yml)
+        return
+
 
 class TestFiletree(unittest.TestCase):
     _dir = os.path.realpath(

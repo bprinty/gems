@@ -77,16 +77,24 @@ class composite(object):
     @classmethod
     def load(cls, fh):
         """
-        Load data from file handle.
+        Load json or yaml data from file handle.
 
         Args:
             fh (file): File handle to load from.
 
         Examlple:
             >>> with open('data.json', 'r') as json:
-            >>>    data = composite.load(json)
+            >>>    jsdata = composite.load(json)
+            >>>
+            >>> with open('data.yml', 'r') as yml:
+            >>>    ymldata = composite.load(yml)
         """
-        return cls(json.load(fh))
+        dat = fh.read()
+        try:
+            ret = cls.from_json(dat)
+        except ValueError:
+            ret = cls.from_yaml(dat)
+        return ret
 
     @classmethod
     def from_json(cls, fh):
@@ -100,7 +108,10 @@ class composite(object):
             >>> with open('data.json', 'r') as json:
             >>>    data = composite.load(json)
         """
-        return cls.load(fh)
+        if isinstance(fh, str):
+            return cls(json.loads(fh))
+        else:
+            return cls(json.load(fh))
 
     @classmethod
     def from_yaml(cls, fh):
