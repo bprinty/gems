@@ -231,9 +231,22 @@ class TestComposite(unittest.TestCase):
         self.assertEqual(js, yml)
         return
 
+    def test_implicit_load(self):
+        with open(os.path.join(__resources__, 'list.json'), 'r') as fi:
+            js = composite.load(fi)
+        with open(os.path.join(__resources__, 'list.yml'), 'r') as fi:
+            yml = composite.load(fi)
+        self.assertEqual(js, yml)
+        return
+
 
 class TestFiletree(unittest.TestCase):
-    _dir = os.path.realpath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+    _dir = os.path.realpath(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            '..'
+        )
+    )
 
     def test_properties(self):
         data = filetree(self._dir)
@@ -266,10 +279,10 @@ class TestFiletree(unittest.TestCase):
         return
 
     def test_match(self):
-        data = filetree(self._dir, regex=r".*.json$")
+        data = filetree(self._dir, regex=r".*.yml$")
         self.assertEqual(len(data.filelist()), 2)
-        self.assertTrue('dict.json' in sorted(data.filelist())[0])
-        self.assertTrue('list.json' in sorted(data.filelist())[1])
+        self.assertTrue('dict.yml' in sorted(data.filelist())[0])
+        self.assertTrue('list.yml' in sorted(data.filelist())[1])
         return
 
     def test_prune(self):

@@ -34,8 +34,26 @@ clean:
 lint:
 	flake8 gems tests
 
-test:
+test: test-py2 test-py3
+
+test-py2:
+	@echo "Running python2 tests ... "
+	virtualenv .py2
+	. .py2/bin/activate
+	pip install nose nose-parameterized
+	pip install -r requirements.txt
 	python setup.py test
+	rm -rf .py2
+
+test-py3:
+	@echo "Running python3 tests ... "
+	virtualenv -p python3 .py3
+	. .py3/bin/activate
+	pip install nose nose-parameterized
+	pip install -r requirements.txt
+	python setup.py test
+	rm -rf .py3
+
 
 tag:
 	VER=$(VERSION) && if [ `git tag | grep "$$VER" | wc -l` -ne 0 ]; then git tag -d $$VER; fi

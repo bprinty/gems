@@ -162,7 +162,7 @@ By default, this will sort keys and pretty-print to the file, but if you just wa
 filetree
 ~~~~~~~~
 
-Traversal of a filetree is typically a pain in python. You could use ``os.path.walk`` to within a recursive function to accomplish it, but there should be an easier way. That's where the :class:`gems.filetree` comes in handy. Here is an example of how to use the :class:`gems.filetree` type in a project:
+Traversal of a filetree is typically a pain in python. You could use ``os.path.walk`` recursively to accomplish it, but there should be an easier way. That's where the :class:`gems.filetree` comes in handy. Here is an example of how to use the :class:`gems.filetree` type in a project:
 
 .. code-block:: python
 
