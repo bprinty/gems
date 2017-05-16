@@ -92,7 +92,7 @@ class composite(object):
         dat = fh.read()
         try:
             ret = cls.from_json(dat)
-        except ValueError:
+        except:
             ret = cls.from_yaml(dat)
         return ret
 
