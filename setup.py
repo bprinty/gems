@@ -9,12 +9,15 @@
 
 # config
 # ------
+import os
+import re
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
-import gems
+with open(os.path.join('gems', '__init__.py'), 'r') as fi:
+    __version__ = re.search(r'__version__\s*=\s*[\'"]([^\'"]*)[\'"]', fi.read()).group(1)
 
 with open('requirements.txt', 'r') as reqs:
     requirements = map(lambda x: x.rstrip(), reqs.readlines())
@@ -35,7 +38,7 @@ with open('README.rst') as readme_file:
 # ----
 setup(
     name='gems',
-    version=gems.__version__,
+    version=__version__,
     description="Python utilities for data manipulation and management.",
     long_description=readme,
     author="Blake Printy",
