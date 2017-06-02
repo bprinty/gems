@@ -16,11 +16,14 @@ try:
 except ImportError:
     from distutils.core import setup
 
+
 with open(os.path.join('gems', '__init__.py'), 'r') as fi:
     __version__ = re.search(r'__version__\s*=\s*[\'"]([^\'"]*)[\'"]', fi.read()).group(1)
 
+
 with open('requirements.txt', 'r') as reqs:
     requirements = map(lambda x: x.rstrip(), reqs.readlines())
+
 
 test_requirements = [
     'nose',
