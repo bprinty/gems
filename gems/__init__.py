@@ -8,3 +8,6 @@ __version__ = '0.1.10'
 from .datatypes import composite
 from .datatypes import filetree
 
+from .decorators import require
+
+from .metaclasses import DocRequire
