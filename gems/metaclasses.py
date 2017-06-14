@@ -43,5 +43,5 @@ class DocRequire(type):
             if not hasattr(value, "__call__"):
                 continue
             if not getattr(value, '__doc__'):
-                raise TypeError("%s must have a docstring" % key)
+                raise AssertionError("%s must have a docstring" % key)
         type.__init__(self, name, bases, attrs)
