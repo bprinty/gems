@@ -26,7 +26,6 @@ def require(method):
 
         >>> class Foo(Bar):
         >>>
-        >>>    @property
         >>>    def a(self):
         >>>        print 'a!'
         >>>        return 1
