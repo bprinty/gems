@@ -149,10 +149,7 @@ class composite(object):
         return str(self.json())
 
     def __repr__(self):
-        res = str(self.json())
-        if len(res) > 2000:
-            res = res[:50] + '\n...\n' + res[-50:]
-        return res
+        return str(self)
 
     def __iter__(self):
         if self.meta_type == 'list':
