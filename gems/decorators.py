@@ -8,7 +8,10 @@
 
 # imports
 # -------
+import inspect
 from functools import wraps
+
+from .datatypes import composite
 
 
 # decorators
