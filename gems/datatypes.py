@@ -397,6 +397,15 @@ class composite(object):
         elif self.meta_type == 'dict':
             return self._dict.keys()
 
+    def items(self):
+        """
+        Return keys for object, if they are available.
+        """
+        if self.meta_type == 'list':
+            return self._list
+        elif self.meta_type == 'dict':
+            return self._dict.items()
+
     def json(self):
         """
         Return JSON representation of object.
