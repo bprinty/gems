@@ -9,5 +9,6 @@ from .datatypes import composite
 from .datatypes import filetree
 
 from .decorators import require
+from .decorators import exception
 
 from .metaclasses import DocRequire

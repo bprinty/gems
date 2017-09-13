@@ -9,7 +9,7 @@
 # imports
 # -------
 import unittest
-from gems import require
+from gems import require, exception
 
 from nose.tools import nottest
 
@@ -31,4 +31,20 @@ class TestRequire(unittest.TestCase):
     def test_require(self):
         self.assertEqual(self._a, None)
         self.assertEqual(self.property, 1)
+        return
+
+
+class CustomException(Exception):
+    pass
+
+
+class TestException(unittest.TestCase):
+
+    @exception(CustomException)
+    def throw(self):
+        raise AssertionError('This is an exception!')
+
+    def test_exception(self):
+        with self.assertRaises(CustomException):
+            self.throw()
         return
