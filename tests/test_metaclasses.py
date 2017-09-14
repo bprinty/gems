@@ -10,6 +10,7 @@
 # -------
 import unittest
 from gems import DocRequire
+import six
 
 from nose.tools import nottest
 
@@ -22,18 +23,16 @@ class TestDocRequire(unittest.TestCase):
         # raises AssertionError when evaled
         with self.assertRaises(AssertionError):
             
-            class A(object):
-                __metaclass__ = DocRequire
-                
+            @six.add_metaclass(DocRequire)
+            class A(object):    
                 def method(self):
                     return
         
         # shouldn't raise an AssertionError
         with self.assertRaises(TypeError):
             
+            @six.add_metaclass(DocRequire)
             class A(object):
-                __metaclass__ = DocRequire
-                
                 def method(self):
                     """ okay """
                     return

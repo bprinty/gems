@@ -51,7 +51,7 @@ test-py3:
 	. .py3/bin/activate
 	pip install nose nose-parameterized
 	pip install -r requirements.txt
-	python setup.py test
+	python3 setup.py test
 	rm -rf .py3
 
 

@@ -8,12 +8,8 @@
 
 # imports
 # -------
-import inspect
-import traceback
 from functools import wraps
-import sys
-
-from .datatypes import composite
+from future.utils import raise_with_traceback
 
 
 # decorators
@@ -103,6 +99,6 @@ def exception(exception):
             try:
                 return func(*args, **kwargs)
             except Exception as exe:
-                raise exception(exe, sys.exc_info()[2])
+                raise raise_with_traceback(exception(exe))
         return wrapper
     return decorator
