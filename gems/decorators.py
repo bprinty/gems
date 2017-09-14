@@ -103,6 +103,6 @@ def exception(exception):
             try:
                 return func(*args, **kwargs)
             except Exception as exe:
-                raise exception, exe, sys.exc_info()[2]
+                raise exception(exe, sys.exc_info()[2])
         return wrapper
     return decorator
