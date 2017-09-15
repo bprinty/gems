@@ -87,6 +87,10 @@ class TestComposite(unittest.TestCase):
     def test_properties(self):
         data = composite(self._dict)
         self.assertEqual(len(data.items()), len(self._dict.items()))
+        self.assertEqual(
+            list(map(lambda x: x[1], data.items())),
+            list(data.values())
+        )
         self.assertEqual(data.one, 1)
         self.assertEqual(data['one'], 1)
         self.assertEqual(data.two[1], 2)
@@ -114,6 +118,7 @@ class TestComposite(unittest.TestCase):
         data[0] = 2
         self.assertEqual(data[0], 2)
         self.assertEqual(len(data.items()), len(self._list))
+        self.assertEqual(list(data.items()), list(data.values()))
         return
 
     def test_iteration(self):
