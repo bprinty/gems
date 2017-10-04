@@ -263,6 +263,9 @@ class TestFiletree(unittest.TestCase):
         self.assertTrue(isinstance(data['tests'].resources, filetree))
         self.assertTrue(os.path.exists(data.tests.resources['dict.json']))
         self.assertTrue('tests/resources/dict.json' in data.tests.resources['dict.json'])
+        
+        data = filetree(os.path.join(__resources__, '*.json'))
+        self.assertEqual(len(data), 2)
         return
 
     def test_operators(self):
