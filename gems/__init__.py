@@ -10,5 +10,6 @@ from .datatypes import filetree
 
 from .decorators import require
 from .decorators import exception
+from .decorators import keywords
 
 from .metaclasses import DocRequire

@@ -9,7 +9,7 @@
 # imports
 # -------
 import unittest
-from gems import require, exception
+from gems import require, exception, keywords
 
 from nose.tools import nottest
 
@@ -47,4 +47,29 @@ class TestException(unittest.TestCase):
     def test_exception(self):
         with self.assertRaises(CustomException):
             self.throw()
+        return
+
+
+class TestKeywords(unittest.TestCase):
+
+    @keywords
+    def function(self, *args, **kwargs):
+        return args, kwargs
+
+    def test_keywords(self):
+        args, kwargs = self.function(one=1, two=2)
+        self.assertEqual(len(args), 0)
+        self.assertEqual(kwargs, {'one': 1, 'two': 2})
+
+        args, kwargs = self.function(1, two=2)
+        self.assertEqual(len(args), 1)
+        self.assertEqual(kwargs, {'two': 2})
+
+        args, kwargs = self.function({'one': 1}, two=2)
+        self.assertEqual(len(args), 0)
+        self.assertEqual(kwargs, {'one': 1, 'two': 2})
+
+        args, kwargs = self.function({'one': 1}, two=2)
+        self.assertEqual(len(args), 0)
+        self.assertEqual(kwargs, {'one': 1, 'two': 2})
         return

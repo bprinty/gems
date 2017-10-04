@@ -9,11 +9,13 @@
 # imports
 # -------
 from functools import wraps
+import inspect
 from future.utils import raise_with_traceback
+from .datatypes import composite
 
 
-# decorators
-# ----------
+# class-related
+# -------------
 def require(method):
     """
     Decorator for managing chained dependencies of different class
@@ -65,8 +67,8 @@ def require(method):
     return decorator
 
 
-# decorator
-# ---------
+# exception-related
+# -----------------
 def exception(exception):
     """
     Wrap function/method with specific exception if any
@@ -102,3 +104,32 @@ def exception(exception):
                 raise raise_with_traceback(exception(exe))
         return wrapper
     return decorator
+
+
+# function-related
+# ----------------
+def keywords(func):
+    """
+    Accumulate all dictionary and named arguments as
+    keyword argument dictionary. This is generally useful for
+    functions that try to automatically resolve inputs.
+
+    Examples:
+        >>> @keywords
+        >>> def test(*args, **kwargs):
+        >>>     return kwargs
+        >>>
+        >>> print test({'one': 1}, two=2)
+        {'one': 1, 'two': 2}
+    """
+    @wraps(func)
+    def decorator(*args, **kwargs):
+        idx = 0 if inspect.ismethod(func) else 1
+        if len(args) > idx:
+            if isinstance(args[idx], (dict, composite)):
+                for key in args[idx]:
+                    kwargs[key] = args[idx][key]
+                args = args[:idx]
+        return func(*args, **kwargs)
+    return decorator
+
