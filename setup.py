@@ -26,8 +26,8 @@ with open('requirements.txt', 'r') as reqs:
 
 
 test_requirements = [
-    'nose',
-    'nose-parameterized'
+    'pytest',
+    'pytest-runner'
 ]
 
 
@@ -65,6 +65,6 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
     ],
-    test_suite='nose.collector',
-    tests_require=test_requirements
+    tests_require=test_requirements,
+    setup_requires=test_requirements
 )
