@@ -12,6 +12,7 @@ import os
 import re
 import json
 import yaml
+import glob
 
 from .utils import depricated_name, deprecated
 
@@ -493,20 +494,25 @@ class filetree(object):
     """
 
     def __init__(self, directory, ignore=r"^[._]", regex=r".*"):
-        self.root = os.path.realpath(directory)
         self.ignore = ignore
         self.regex = regex
         self._data = {}
-        for item in os.listdir(self.root):
-            if ignore is not None:
-                if re.search(ignore, item):
-                    continue
-            fullpath = os.path.realpath(os.path.join(self.root, item))
-            if os.path.isdir(fullpath):
-                self._data[os.path.basename(fullpath)] = filetree(fullpath, ignore=ignore, regex=regex)
-            else:
-                if re.search(regex, fullpath):
-                    self._data[os.path.basename(fullpath)] = fullpath
+        self.root = os.path.realpath(directory)
+        if os.path.isdir(directory):
+            for item in os.listdir(self.root):
+                if ignore is not None:
+                    if re.search(ignore, item):
+                        continue
+                fullpath = os.path.realpath(os.path.join(self.root, item))
+                if os.path.isdir(fullpath):
+                    self._data[os.path.basename(fullpath)] = filetree(fullpath, ignore=ignore, regex=regex)
+                else:
+                    if re.search(regex, fullpath):
+                        self._data[os.path.basename(fullpath)] = fullpath
+        else:
+            for fi in glob.glob(directory):
+                fullpath = os.path.realpath(fi)
+                self._data[os.path.basename(fullpath)] = fullpath
         self._filelist = []
         return
 
