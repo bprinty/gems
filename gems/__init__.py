@@ -2,7 +2,7 @@
 
 __author__ = 'Blake Printy'
 __email__ = 'bprinty@gmail.com'
-__version__ = '0.2.6'
+__version__ = '0.2.7'
 
 
 from .datatypes import composite
