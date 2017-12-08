@@ -9,9 +9,9 @@
 # imports
 # -------
 import unittest
-from gems import require, exception, keywords
+from datetime import datetime
+from gems import require, exception, keywords, cached
 
-from nose.tools import nottest
 
 
 # tests
@@ -31,6 +31,22 @@ class TestRequire(unittest.TestCase):
     def test_require(self):
         self.assertEqual(self._a, None)
         self.assertEqual(self.property, 1)
+        return
+
+
+class TestCached(unittest.TestCase):
+
+    @cached.tag('reset')
+    def time(self):
+        return str(datetime.now().time())
+
+    def test_cached(self):
+        time = self.time
+        self.assertEqual(self.time, time)
+        cached.invalidate(self, 'reset')
+        newtime = self.time
+        self.assertNotEqual(newtime, time)
+        self.assertEqual(newtime, self.time)
         return
 
 
