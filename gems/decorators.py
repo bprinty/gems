@@ -67,6 +67,52 @@ def require(method):
     return decorator
 
 
+class cached(object):
+    """
+    Special implementation of cached_property by pydanny to allow for
+    tagging and invalidation of caches.
+
+    Examples:
+        >>> class Foo(object):
+        >>> @cached.tag('stateful')
+        >>> def time(self)
+        >>>     return str(datetime.now().time())
+        >>>
+        >>> obj = Foo()
+        >>> obj.time
+        '11:24:33.613401'
+        >>> time.sleep(5)
+        >>> obj.time
+        '11:24:33.613401'
+        >>> cached.invalidate('stateful')
+        >>> obj.time
+        '11:26:35.197487'
+    """
+
+    def __init__(self, func, *tags):
+        self.__doc__ = getattr(func, '__doc__')
+        self.func = func
+        self.tags = frozenset(tags)
+        return
+
+    def __get__(self, obj, cls):
+        if obj is None:
+            return self
+        value = obj.__dict__[self.func.__name__] = self.func(obj)
+        return value
+
+    @classmethod
+    def tag(cls, *tags):
+        return lambda f: cls(f, *tags)
+
+    @staticmethod
+    def invalidate(obj, tag):
+        for key, value in obj.__class__.__dict__.items():
+            if isinstance(value, cached) and tag in value.tags:
+                obj.__dict__.pop(key, None)
+        return
+
+
 # exception-related
 # -----------------
 def exception(exception):
@@ -132,4 +178,3 @@ def keywords(func):
                 args = args[:idx]
         return func(*args, **kwargs)
     return decorator
-
