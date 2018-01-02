@@ -438,9 +438,9 @@ class composite(object):
                     ret[key] = self._dict[key].json()
             return ret
 
-    def write(self, fh, pretty=True):
+    def write_json(self, fh, pretty=True):
         """
-        Write composite object to file handle.
+        Write composite object to file handle in JSON format.
 
         Args:
             fh (file): File handle to write to.
@@ -451,6 +451,16 @@ class composite(object):
             json.dump(json.loads(sjson), fh, sort_keys=True, indent=4)
         else:
             json.dump(json.loads(sjson), fh)
+        return
+
+    def write_yaml(self, fh):
+        """
+        Write composite object to file handle in YAML format.
+
+        Args:
+            fh (file): File handle to write to.
+        """
+        yaml.dump(self.json(), fh)
         return
 
 
