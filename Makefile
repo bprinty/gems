@@ -7,8 +7,10 @@
 
 # config
 # ------
+PROJECT    = gems
 REMOTE     = origin
-VERSION    = `python -c 'import gems; print gems.__version__'`
+BRANCH     = `git branch | grep '*' | awk '{print "-"$$2}' | grep -v 'master'`
+VERSION    = `python -c 'import $(PROJECT); print($(PROJECT).__version__)'`
 
 
 # targets
@@ -16,25 +18,25 @@ VERSION    = `python -c 'import gems; print gems.__version__'`
 .PHONY: docs clean tag
 
 help:
-	@echo "clean    - remove all build, test, coverage and Python artifacts"
-	@echo "lint     - check style with flake8"
-	@echo "test     - run tests quickly with the default Python"
-	@echo "docs     - generate Sphinx HTML documentation, including API docs"
-	@echo "release  - package and upload a release"
-	@echo "build    - package module"
-	@echo "install  - install the package to the active Python's site-packages"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-clean:
+
+info: ## list info about package
+	@echo $(PROJECT), version $(VERSION)$(BRANCH)
+	@echo last updated: `git log | grep 'Date:' | head -1 | sed 's/Date:   //g'`
+
+
+clean: ## remove all intermediate artifacts
 	rm -fr build/
 	rm -fr dist/
 	rm -fr .eggs/
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -fr {} +
 
-lint:
+lint: ## check style with flake8
 	flake8 gems tests
 
-test: test-py2 test-py3
+test: test-py2 test-py3 ## run tests quickly with the default Python
 
 test-py2:
 	@echo "Running python2 tests ... "
@@ -51,23 +53,23 @@ test-py3:
 	rm -rf .py3
 
 
-tag:
+tag: # tag repository for release
 	VER=$(VERSION) && if [ `git tag | grep "$$VER" | wc -l` -ne 0 ]; then git tag -d $$VER; fi
 	VER=$(VERSION) && git tag $$VER -m "gems, release $$VER"
 
-docs:
+docs: ## build documentation
 	cd docs && make html
 
 
-build: clean
+build: clean ## build package for release
 	python setup.py sdist
 	python setup.py bdist_wheel
 	ls -l dist
 
-release: build tag
+release: build tag ## build package and push to pypi
 	VER=$(VERSION) && git push $(REMOTE) :$$VER || echo 'Remote tag available'
 	VER=$(VERSION) && git push $(REMOTE) $$VER
 	twine upload --skip-existing dist/*
 
-install: clean
+install: clean ## use setuptools to install package
 	python setup.py install
