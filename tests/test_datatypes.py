@@ -14,8 +14,6 @@ import uuid
 import unittest
 from gems import composite, filetree
 
-from nose.tools import nottest
-
 
 # config
 # ______

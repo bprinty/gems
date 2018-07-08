@@ -427,6 +427,9 @@ class composite(object):
         return
 
     def extend(self, item):
+        """
+        Extend list from object, if object is list.
+        """
         if self.meta_type == 'dict':
             raise AssertionError('Cannot extend to object of `dict` base type!')
         if self.meta_type == 'list':
@@ -479,6 +482,12 @@ class composite(object):
         """
         yaml.dump(self.json(), fh)
         return
+
+    def write(self, fh, pretty=True):
+        """
+        API niceness defaulting to composite.write_json().
+        """
+        return self.write_json(fh, pretty=pretty)
 
 
 # data management

@@ -12,8 +12,6 @@ import unittest
 from gems import DocRequire
 import six
 
-from nose.tools import nottest
-
 
 # tests
 # -----

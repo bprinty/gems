@@ -38,16 +38,16 @@ test: test-py2 test-py3
 
 test-py2:
 	@echo "Running python2 tests ... "
-	virtualenv .py2
+	virtualenv -p python2 .py2
 	. .py2/bin/activate
-	python setup.py test
+	python2 -m pytest tests
 	rm -rf .py2
 
 test-py3:
 	@echo "Running python3 tests ... "
 	virtualenv -p python3 .py3
 	. .py3/bin/activate
-	python3 setup.py test
+	python3 -m pytest tests
 	rm -rf .py3
 
 
