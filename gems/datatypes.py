@@ -416,6 +416,23 @@ class composite(object):
         elif self.meta_type == 'dict':
             return self._dict.values()
 
+    def append(self, item):
+        """
+        Append to object, if object is list.
+        """
+        if self.meta_type == 'dict':
+            raise AssertionError('Cannot append to object of `dict` base type!')
+        if self.meta_type == 'list':
+            self._list.append(item)
+        return
+
+    def extend(self, item):
+        if self.meta_type == 'dict':
+            raise AssertionError('Cannot extend to object of `dict` base type!')
+        if self.meta_type == 'list':
+            self._list.extend(item)
+        return
+
     def json(self):
         """
         Return JSON representation of object.
