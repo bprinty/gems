@@ -84,7 +84,7 @@ class cached(object):
         >>> time.sleep(5)
         >>> obj.time
         '11:24:33.613401'
-        >>> cached.invalidate('stateful')
+        >>> cached.invalidate(obj, 'stateful')
         >>> obj.time
         '11:26:35.197487'
     """
