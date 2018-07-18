@@ -171,4 +171,4 @@ Using JSON-based access is much easier and cleaner than doing many ``os.path.joi
 Questions/Feedback
 ------------------
 
-File an issue in the `GitHub issue tracker <https://github.com/bprinty/animation/issues>`_.
+File an issue in the `GitHub issue tracker <https://github.com/bprinty/gems/issues>`_.
