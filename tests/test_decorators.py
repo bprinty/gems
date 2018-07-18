@@ -34,19 +34,49 @@ class TestRequire(unittest.TestCase):
         return
 
 
-class TestCached(unittest.TestCase):
+class CacheExample(object):
 
     @cached.tag('reset')
     def time(self):
         return str(datetime.now().time())
 
+    @cached.tag('reset')
+    def ftime(self):
+        return 'time: ' + str(datetime.now().time())
+
+
+class TestCached(unittest.TestCase):
+
     def test_cached(self):
-        time = self.time
-        self.assertEqual(self.time, time)
-        cached.invalidate(self, 'reset')
-        newtime = self.time
+        # multiple properties
+        foo = CacheExample()
+        time = foo.time
+        ftime = foo.ftime
+        self.assertEqual(foo.time, time)
+        self.assertEqual(foo.ftime, ftime)
+        cached.invalidate(foo, 'reset')
+        newtime = foo.time
+        newftime = foo.ftime
         self.assertNotEqual(newtime, time)
-        self.assertEqual(newtime, self.time)
+        self.assertNotEqual(newftime, ftime)
+        self.assertEqual(newtime, foo.time)
+        self.assertEqual(newftime, foo.ftime)
+        
+        # multiple classes
+        bar = CacheExample()
+        btime = bar.time
+        self.assertEqual(bar.time, btime)
+        self.assertEqual(newtime, foo.time)
+        cached.invalidate(bar, 'reset')
+        finaltime = foo.time
+        newbtime = bar.time
+        self.assertNotEqual(newbtime, btime)
+        self.assertEqual(finaltime, newtime)
+        self.assertEqual(newbtime, bar.time)
+
+        # object independence
+        cached.invalidate(foo, 'reset')
+        self.assertNotEqual(finaltime, foo.time)
         return
 
 
