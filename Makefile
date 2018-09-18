@@ -30,8 +30,11 @@ clean: ## remove all intermediate artifacts
 	rm -fr build/
 	rm -fr dist/
 	rm -fr .eggs/
+	find . -name '__pycache__' -exec rm -fr {} +
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -fr {} +
+	find . -name '*.py[co]' -exec rm -f {} +
+
 
 lint: ## check style with flake8
 	flake8 gems tests
