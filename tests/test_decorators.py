@@ -45,6 +45,13 @@ class CacheExample(object):
         return 'time: ' + str(datetime.now().time())
 
 
+class CacheChildExample(CacheExample):
+
+    @cached.tag('reset')
+    def ctime(self):
+        return str(datetime.now().time())
+
+
 class TestCached(unittest.TestCase):
 
     def test_cached(self):
@@ -77,6 +84,21 @@ class TestCached(unittest.TestCase):
         # object independence
         cached.invalidate(foo, 'reset')
         self.assertNotEqual(finaltime, foo.time)
+        return
+
+    def test_inheritance_cached(self):
+        foo = CacheChildExample()
+        time = foo.time
+        ctime = foo.ctime
+        self.assertEqual(foo.time, time)
+        self.assertEqual(foo.ctime, ctime)
+        cached.invalidate(foo, 'reset')
+        newtime = foo.time
+        newctime = foo.ctime
+        self.assertNotEqual(newtime, time)
+        self.assertNotEqual(newctime, ctime)
+        self.assertEqual(newtime, foo.time)
+        self.assertEqual(newctime, foo.ctime)
         return
 
 
