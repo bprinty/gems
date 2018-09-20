@@ -107,21 +107,10 @@ class cached(object):
 
     @staticmethod
     def invalidate(obj, tag):
-        # recursively find all class and parent class properties
-        props = dict(obj.__class__.__dict__)
-        def _(x):
-            for o in x.__bases__:
-                for key in o.__dict__:
-                    if key not in props:
-                        props[key] = o.__dict__[key]
-                _(o)
-            return
-        _(obj.__class__)
-
-        # invalidate all properties properties
-        for key, value in props.items():
-            if isinstance(value, cached) and tag in value.tags:
-                obj.__dict__.pop(key, None)
+        for base in obj.__class__.mro():
+            for key, value in base.__dict__.items():
+                if isinstance(value, cached) and tag in value.tags:
+                    obj.__dict__.pop(key, None)
         return
 
 
