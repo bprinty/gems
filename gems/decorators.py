@@ -112,7 +112,8 @@ class cached(object):
         def _(x):
             for o in x.__bases__:
                 for key in o.__dict__:
-                    props[key] = o.__dict__[key]
+                    if key not in props:
+                        props[key] = o.__dict__[key]
                 _(o)
             return
         _(obj.__class__)
