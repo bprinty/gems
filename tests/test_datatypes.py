@@ -119,6 +119,25 @@ class TestComposite(unittest.TestCase):
         self.assertEqual(list(data.items()), list(data.values()))
         return
 
+    def test_dict_methods(self):
+        data = composite(self._dict)
+
+        # get
+        self.assertEqual(data.get('one'), 1)
+        self.assertEqual(data.get('missing'), None)
+        self.assertEqual(data.get('missing', 1), 1)
+
+        # update
+        data.update({
+            'one': 2,
+            'two': 'three',
+            'five': {'six': 6}
+        })
+        self.assertEqual(data.one, 2)
+        self.assertEqual(data.five.six, 6)
+        self.assertEqual(data.two, 'three')
+        return
+
     def test_iteration(self):
         data = composite(self._dict)
         self.assertEqual(sorted([i for i in data]), sorted(['one', 'two', 'three', 'four']))
