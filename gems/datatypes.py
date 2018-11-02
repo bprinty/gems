@@ -178,6 +178,15 @@ class composite(object):
             raise KeyError(str(item))
         return
 
+    def __delitem__(self, item):
+        if self.meta_type == 'list':
+            del self._list[item]
+        elif self.meta_type == 'dict':
+            del self._dict[item]
+        else:
+            raise KeyError(str(item))
+        return
+
     def __setattr__(self, name, value):
         if name == '_list' or name == '_dict' or name == 'meta_type':
             super(composite, self).__setattr__(name, value)
