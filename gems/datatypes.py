@@ -398,6 +398,13 @@ class composite(object):
         """
         return self._dict.get(*args, **kwargs)
 
+    def pop(self, *args, **kwargs):
+        """
+        Return item or None, depending on if item exists. This is
+        meant to be similar to dict.pop() for safe access of a property.
+        """
+        return self._dict.pop(*args, **kwargs)
+
     def update(self, other):
         """
         Update internal dictionary object. This is meant to be an
