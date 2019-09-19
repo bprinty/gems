@@ -107,9 +107,10 @@ class cached(object):
 
     @staticmethod
     def invalidate(obj, tag):
-        for key, value in obj.__class__.__dict__.items():
-            if isinstance(value, cached) and tag in value.tags:
-                obj.__dict__.pop(key, None)
+        for base in obj.__class__.mro():
+            for key, value in base.__dict__.items():
+                if isinstance(value, cached) and tag in value.tags:
+                    obj.__dict__.pop(key, None)
         return
 
 
@@ -119,7 +120,7 @@ def exception(exception):
     """
     Wrap function/method with specific exception if any
     exception occurs during function execution.
- 
+
     Args:
         exception (Exception): Exception to re-cast error as.
 

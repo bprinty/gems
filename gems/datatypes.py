@@ -178,6 +178,15 @@ class composite(object):
             raise KeyError(str(item))
         return
 
+    def __delitem__(self, item):
+        if self.meta_type == 'list':
+            del self._list[item]
+        elif self.meta_type == 'dict':
+            del self._dict[item]
+        else:
+            raise KeyError(str(item))
+        return
+
     def __setattr__(self, name, value):
         if name == '_list' or name == '_dict' or name == 'meta_type':
             super(composite, self).__setattr__(name, value)
@@ -382,12 +391,30 @@ class composite(object):
         """
         return self._list.index(item)
 
-    def get(self, item):
+    def get(self, *args, **kwargs):
         """
         Return item or None, depending on if item exists. This is
         meant to be similar to dict.get() for safe access of a property.
         """
-        return self._dict.get(item)
+        return self._dict.get(*args, **kwargs)
+
+    def pop(self, *args, **kwargs):
+        """
+        Return item or None, depending on if item exists. This is
+        meant to be similar to dict.pop() for safe access of a property.
+        """
+        return self._dict.pop(*args, **kwargs)
+
+    def update(self, other):
+        """
+        Update internal dictionary object. This is meant to be an
+        analog for dict.update().
+        """
+        if self.meta_type == 'list':
+            raise AssertionError('Cannot update object of `list` base type!')
+        elif self.meta_type == 'dict':
+            self._dict = dict(self + composite(other))
+            return
 
     def keys(self):
         """
