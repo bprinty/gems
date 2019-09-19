@@ -1,7 +1,10 @@
-|Build status| |Maintenance yes| |GitHub license| |Documentation Status|
+|Build status| |Code coverage| |Maintenance yes| |GitHub license| |Documentation Status|
 
 .. |Build status| image:: https://travis-ci.org/bprinty/gems.png?branch=master
    :target: https://travis-ci.org/bprinty/gems
+
+.. |Code coverage| image:: https://codecov.io/gh/bprinty/gems/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/bprinty/gems
 
 .. |Maintenance yes| image:: https://img.shields.io/badge/Maintained%3F-yes-green.svg
    :target: https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity
