@@ -3,9 +3,7 @@ language: python
 
 python:
   - "2.7"
-  - "3.4"
   - "3.5"
-  - "3.6"
   - "3.7"
 
 install:
@@ -13,3 +11,9 @@ install:
 
 script:
   - pytest
+
+before_install:
+  - pip install --user codecov
+
+after_success:
+  - codecov --file coverage/lcov.info --disable search
