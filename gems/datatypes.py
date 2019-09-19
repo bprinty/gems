@@ -126,7 +126,7 @@ class composite(object):
             >>> with open('data.yml', 'r') as json:
             >>>    data = composite.load(json)
         """
-        return cls(yaml.load(fh))
+        return cls(yaml.load(fh, Loader=yaml.FullLoader))
 
     @classmethod
     def from_string(cls, string):
