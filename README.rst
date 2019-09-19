@@ -3,6 +3,29 @@ gems
 
 Python utilities for data manipulation and management.
 
+|Build status|
+
+.. |Build status| image:: https://travis-ci.org/bprinty/gems.png?branch=master
+   :target: https://travis-ci.org/bprinty/gems
+
+
+|Maintenance yes|
+
+.. |Maintenance yes| image:: https://img.shields.io/badge/Maintained%3F-yes-green.svg
+   :target: https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity
+
+
+|GitHub license|
+
+.. |GitHub license| image:: https://img.shields.io/github/license/Naereen/StrapDown.js.svg
+   :target: https://github.com/bprinty/gems/blob/master/LICENSE
+
+
+|Documentation Status|
+
+.. |Documentation Status| image:: https://readthedocs.org/projects/gems/badge/?version=latest
+   :target: http://gems.readthedocs.io/?badge=latest
+
 
 Installation
 ------------
