@@ -27,6 +27,7 @@ with open('requirements.txt', 'r') as reqs:
 
 test_requirements = [
     'pytest',
+    'pytest-cov',
     'pytest-runner'
 ]
 
