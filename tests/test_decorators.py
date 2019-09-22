@@ -7,9 +7,10 @@
 
 # imports
 # -------
+import pytest
 import unittest
 from datetime import datetime
-from gems import require, exception, keywords, cached
+from gems import require, exception, keywords, cached, depricated
 
 
 # tests
@@ -138,4 +139,48 @@ class TestKeywords(unittest.TestCase):
         args, kwargs = self.function({'one': 1}, two=2)
         self.assertEqual(len(args), 0)
         self.assertEqual(kwargs, {'one': 1, 'two': 2})
+        return
+
+
+@depricated
+def depfunc():
+    return
+
+
+@depricated.to('new')
+def depfuncto():
+    return
+
+
+@depricated.msg('test')
+def depfuncmsg():
+    return
+
+
+class TestDepricated(unittest.TestCase):
+
+    @depricated
+    def dep(self):
+        return
+
+    @depricated.to('new')
+    def depto(self):
+        return
+
+    @depricated.msg('test')
+    def depmsg(self):
+        return
+
+    def test_deprication(self):
+        # test decoration on functions
+        with pytest.deprecated_call():
+            depfunc()
+            depfuncto()
+            depfuncmsg()
+
+        # test decoration on class methods
+        with pytest.deprecated_call():
+            self.dep()
+            self.depto()
+            self.depmsg()
         return
