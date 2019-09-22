@@ -2,15 +2,16 @@
 #
 # Useful decorators.
 #
-# @author <bprinty@gmail.com>
 # ------------------------------------------------
 
 
 # imports
 # -------
-from functools import wraps
+import warnings
 import inspect
+from functools import wraps
 from future.utils import raise_with_traceback
+
 from .datatypes import composite
 
 
@@ -179,3 +180,62 @@ def keywords(func):
                 args = args[:idx]
         return func(*args, **kwargs)
     return decorator
+
+
+# deprication
+# -----------
+class depricated(object):
+    """
+    Decorator for warning user of function deprication. This
+    decorator takes additional arguments to specify which
+    function to use in lieu of the depricated function.
+
+    Examples:
+
+        With default message:
+
+        .. code-block:: python
+
+            >>> @depricated
+            >>> def old_func():
+            >>>     pass
+
+        With message detailing new function to call:
+
+        .. code-block:: python
+
+            >>> @depricated.to('new_func')
+            >>> def old_func():
+            >>>     pass
+
+        With custom deprication message:
+
+        .. code-block:: python
+
+            >>> @depricated.msg('old_func is depricated')
+            >>> def old_func():
+            >>>     pass
+
+    """
+
+    def __init__(self, func, msg=None):
+        self.__doc__ = getattr(func, '__doc__')
+        if msg is None:
+            msg = "Function {} is depricated. Consult the documentation for a better way of performing this task.".format(func.__name__)
+        self.msg = msg
+        self.func = func
+        return
+
+    def __call__(self):
+        warnings.warn(self.msg, category=DeprecationWarning, stacklevel=2)
+        return self.func
+
+    @classmethod
+    def to(cls, name):
+        if callable(name):
+            name = name.__name__
+        return lambda f: cls(f, msg="Function {} is depricated, please use {} instead.".format(f.__name__, name))
+
+    @classmethod
+    def msg(cls, msg):
+        return lambda f: cls(f, msg=msg)

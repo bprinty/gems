@@ -2,7 +2,6 @@
 #
 # Decorators for terminal-based wait animations
 #
-# @author <bprinty@gmail.com>
 # ------------------------------------------------
 
 
@@ -14,11 +13,17 @@ import json
 import yaml
 import glob
 
-from .utils import depricated_name, deprecated
+
+# compatibility
+# -------------
+try:
+    basestring
+except NameError:
+    basestring = str
 
 
 # data management
-# -----------------
+# ---------------
 class composite(object):
     """
     Data structure for traversing object relationships via attributes
@@ -93,7 +98,7 @@ class composite(object):
         dat = fh.read()
         try:
             ret = cls.from_json(dat)
-        except:
+        except Exception:
             ret = cls.from_yaml(dat)
         return ret
 
@@ -264,7 +269,7 @@ class composite(object):
         """
         if not isinstance(other, composite):
             raise AssertionError('Cannot intersect composite and {} types'.format(type(other)))
-        
+
         if self.meta_type != other.meta_type:
             return composite({})
 
@@ -285,7 +290,7 @@ class composite(object):
                     if recursive and \
                        isinstance(item, composite) and \
                        isinstance(other.get(key), composite):
-                       keep[key] = item.intersection(other.get(key), recursive=True)
+                        keep[key] = item.intersection(other.get(key), recursive=True)
                     elif item == other[key]:
                         keep[key] = item
             return composite(keep)
@@ -305,7 +310,7 @@ class composite(object):
         """
         if not isinstance(other, composite):
             raise AssertionError('Cannot difference composite and {} types'.format(type(other)))
-        
+
         if self.meta_type != other.meta_type:
             return self
 
@@ -326,7 +331,7 @@ class composite(object):
                     if recursive and \
                        isinstance(item, composite) and \
                        isinstance(other.get(key), composite):
-                       keep[key] = item.difference(other.get(key), recursive=True)
+                        keep[key] = item.difference(other.get(key), recursive=True)
                     elif item != other[key]:
                         keep[key] = item
                 else:
@@ -347,11 +352,11 @@ class composite(object):
             recursive (bool): Whether or not to perform the operation recursively,
                 for all nested composite objects.
             overwrite (bool): Whether or not to overwrite entries with the same
-                key in a nested dictionary. 
+                key in a nested dictionary.
         """
         if not isinstance(other, composite):
             raise AssertionError('Cannot union composite and {} types'.format(type(other)))
-        
+
         if self.meta_type != other.meta_type:
             return composite([self, other])
 
@@ -657,7 +662,6 @@ class filetree(object):
                 data[item] = self._data[item]
         return data
 
-    @depricated_name('filelist()')
     def files(self):
         return self.filelist()
 

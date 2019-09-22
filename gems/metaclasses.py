@@ -2,7 +2,6 @@
 #
 # Useful metaclasses.
 #
-# @author <bprinty@gmail.com>
 # ------------------------------------------------
 
 
