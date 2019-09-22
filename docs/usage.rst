@@ -1,16 +1,25 @@
 Usage
 ========
 
-The `gems <http://github.com/bprinty/gems>`_ module provides specialized data structures to augment development. It's similar to the `collections <https://docs.python.org/2/library/collections.html>`_ module, but contains different types of objects.
+The `gems <http://github.com/bprinty/gems>`_ module provides specialized data structures and utilities to augment development. It's similar to the `collections <https://docs.python.org/2/library/collections.html>`_ module, but contains different types of objects. In this package are several different types of utilities:
+
+
+* `Data Types`_ - Data types to simplify code use and remove boilerplate when doing common operations.
+* `Decorators`_ - Decorators for common developer needs, including decoration, method caching, and more.
+* `MetaClasses`_ - MetaClasses for encouraging better developer habits.
+
+
+Data Types
+----------
 
 Currently, the following objects are available (this list will grow with time and feedback):
 
 +------------+---------------------------------------------------------+ 
 | Name       | Description                                             | 
 +============+=========================================================+ 
-| composite  | JSON-like data structure for easy data traversal.       | 
+| composite  | JSON-like data structure for easy data traversal.       |
 +------------+---------------------------------------------------------+ 
-| filetree   | JSON-like data structure for easy filesystem traversal. | 
+| filetree   | JSON-like data structure for easy filesystem traversal. |
 +------------+---------------------------------------------------------+ 
 
 
@@ -236,3 +245,93 @@ Finally, to prune the tree for specific files and create a new filetree object:
     '/path/to/mydir/one/two.txt'
     '/path/to/mydir/two/three/four.txt'
     '/path/to/mydir/two/five six/seven.txt'
+
+
+Decorators
+----------
+
+Currently, the following decorators are available (this list will grow with time and feedback):
+
++------------+------------------------------------------------------------------------------------+ 
+| Name       | Description                                                                        | 
++============+====================================================================================+ 
+| cached     | Decorator for caching class methods with the ability to invalidate caches.         |
++------------+------------------------------------------------------------------------------------+ 
+| require    | Decorator for requiring class method dependencies.                                 |
++------------+------------------------------------------------------------------------------------+ 
+| exception  | Decorator for re-raising exceptions as custom exception types                      |
++------------+------------------------------------------------------------------------------------+
+| keywords   | Decorator for parsing function ambiguous function inputs into keyword arguments    |
++------------+------------------------------------------------------------------------------------+
+| depricated | Decorator for issuing various types of deprication warnings.                       |
++------------+------------------------------------------------------------------------------------+
+
+
+cached
+~~~~~~
+
+.. note:: This needs documentation. In the interim, see the API section of the documentation. 
+
+
+require
+~~~~~~~
+
+.. note:: This needs documentation. In the interim, see the API section of the documentation. 
+
+
+exception
+~~~~~~~~~
+
+.. note:: This needs documentation. In the interim, see the API section of the documentation. 
+
+
+keywords
+~~~~~~~~
+
+.. note:: This needs documentation. In the interim, see the API section of the documentation. 
+
+
+depricated
+~~~~~~~~~~
+
+.. note:: This needs documentation. In the interim, see the API section of the documentation. 
+
+
+
+MetaClasses
+-----------
+
+Currently, the following decorators are available (this list will grow with time and feedback):
+
++------------+------------------------------------------------------------------------------------+ 
+| Name       | Description                                                                        | 
++============+====================================================================================+ 
+| DocRequire | Metaclass for requiring that all class methods have valid docstrings.              |
++------------+------------------------------------------------------------------------------------+ 
+
+
+DocRequire
+~~~~~~~~~~
+
+It's often hard to enforce good code structure and documentation. Developers often fail to properly
+document the code they contribute, and that results in confusing and difficult to maintain code bases.
+The `DocRequire` decorator is an attempt to help with that, where classes using this metaclass won't
+run if not properly documented. Here's are examples:
+
+
+.. code-block:: python
+
+    >>> # class without docstrings will throw a TypeError
+    >>> class A(object):
+    >>>     def method(self):
+    >>>         return 1
+    >>>
+    TypeError: `method` must have a docstring
+
+    >>> # class with docstrings is fine
+    >>> class A(object):
+    >>>     ''' A class with docstrings '''
+    >>>     def method(self):
+    >>>         ''' A method  '''
+    >>>         return 1
+    >>>
