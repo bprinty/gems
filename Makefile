@@ -1,7 +1,6 @@
 #
-# gems Makefile
+# Makefile for managing development/deployment tasks
 #
-# @author <bprinty@gmail.com>
 # ------------------------------------------------------
 
 
@@ -37,28 +36,36 @@ clean: ## remove all intermediate artifacts
 
 
 lint: ## check style with flake8
-	flake8 gems tests
+	flake8 $(PROJECT) tests
+
 
 test: test-py2 test-py3 ## run tests quickly with the default Python
+
 
 test-py2:
 	@echo "Running python2 tests ... "
 	virtualenv -p python2 .py2
 	. .py2/bin/activate
-	python2 -m pytest tests
+	pip install -r requirements.txt
+	pip install -r tests/requirements.txt
+	pytest
 	rm -rf .py2
+
 
 test-py3:
 	@echo "Running python3 tests ... "
 	virtualenv -p python3 .py3
 	. .py3/bin/activate
-	python3 -m pytest tests
+	pip install -r requirements.txt
+	pip install -r tests/requirements.txt
+	pytest
 	rm -rf .py3
 
 
 tag: # tag repository for release
 	VER=$(VERSION) && if [ `git tag | grep "$$VER" | wc -l` -ne 0 ]; then git tag -d $$VER; fi
-	VER=$(VERSION) && git tag $$VER -m "gems, release $$VER"
+	VER=$(VERSION) && git tag $$VER -m "$(PROJECT), release $$VER"
+
 
 docs: ## build documentation
 	cd docs && make html
@@ -69,10 +76,12 @@ build: clean ## build package for release
 	python setup.py bdist_wheel
 	ls -l dist
 
+
 release: build tag ## build package and push to pypi
 	VER=$(VERSION) && git push $(REMOTE) :$$VER || echo 'Remote tag available'
 	VER=$(VERSION) && git push $(REMOTE) $$VER
 	twine upload --skip-existing dist/*
+
 
 install: clean ## use setuptools to install package
 	python setup.py install
