@@ -1,8 +1,8 @@
 
 |Build status| |Code coverage| |Maintenance yes| |GitHub license| |Documentation Status|
 
-.. |Build status| image:: https://travis-ci.org/bprinty/gems.png?branch=master
-   :target: https://travis-ci.org/bprinty/gems
+.. |Build status| image:: https://travis-ci.com/bprinty/gems.png?branch=master
+   :target: https://travis-ci.com/bprinty/gems
 
 .. |Code coverage| image:: https://codecov.io/gh/bprinty/gems/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/bprinty/gems
